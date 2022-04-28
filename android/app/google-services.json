@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "593336307408",
+    "project_id": "childrenforenvironment-d475e",
+    "storage_bucket": "childrenforenvironment-d475e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:593336307408:android:a2e86c3fc517eb673f18d5",
+        "android_client_info": {
+          "package_name": "com.children.cfe"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "593336307408-jrvc4l4abdfudoolloglo0imkg6n9u4n.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAt-6KQefnFGWJnyDyEv2-70Cswriidfs8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "593336307408-jrvc4l4abdfudoolloglo0imkg6n9u4n.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

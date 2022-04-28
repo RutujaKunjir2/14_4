@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>  
+<resources>  
+   <string name="app_name">CFE</string>
+   <string name="facebook_app_id">276345247781993</string>
+   <string name="fb_login_protocol_scheme">fb276345247781993</string>
+<!--   <string name="default_web_client_id">593336307408-jrvc4l4abdfudoolloglo0imkg6n9u4n.apps.googleusercontent.com</string>-->
+   <string name="redirect_url">www.childrenforenvironment.com/oauth/google/callback</string>
+   <string name="asset_statements" translatable="false">[{"include": "http://cfe.carvingit.com/.well-known/assetlinks.json"}]</string>
+</resources>  
