@@ -223,7 +223,7 @@ class _MyAppState extends State<IosPayment> {
     if (!_isAvailable) {
       return const Card();
     }
-    const ListTile productHeader = ListTile(title: Text('Select Subcription Plan'));
+    const ListTile productHeader = ListTile(title: Text('Select Subscription Plan'));
     List<ListTile> productList = <ListTile>[];
     if (_notFoundIds.isNotEmpty) {
       productList.add(ListTile(
