@@ -138,7 +138,7 @@ class _MyAppState extends State<IosPayment> {
           children: [
             _buildConnectionCheckTile(),
             _buildProductList(),
-            _buildConsumableBox(),
+            //_buildConsumableBox(),
             // _buildRestoreButton(),
           ],
         ),
@@ -167,7 +167,18 @@ class _MyAppState extends State<IosPayment> {
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
-          title: const Text('IAP Example'),
+          automaticallyImplyLeading: true,
+          leading: IconButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            icon: Icon(Icons.arrow_back,color: Colors.black,),
+          ),
+          backgroundColor: Color(0xffFCD800),
+          title: Text("Payment",
+              style: const TextStyle(
+                  color: Color(0xff000000),
+                  fontWeight: FontWeight.bold)),
         ),
         body: Stack(
           children: stack,
@@ -184,7 +195,7 @@ class _MyAppState extends State<IosPayment> {
       leading: Icon(_isAvailable ? Icons.check : Icons.block,
           color: _isAvailable ? Colors.green : ThemeData.light().errorColor),
       title: Text(
-          'The store is ' + (_isAvailable ? 'available' : 'unavailable') + '.'),
+          'The payment is ' + (_isAvailable ? 'available' : 'unavailable') + '.'),
     );
     final List<Widget> children = <Widget>[storeHeader];
 
@@ -207,12 +218,12 @@ class _MyAppState extends State<IosPayment> {
       return const Card(
           child: (ListTile(
               leading: CircularProgressIndicator(),
-              title: Text('Fetching products...'))));
+              title: Text('Fetching plans...'))));
     }
     if (!_isAvailable) {
       return const Card();
     }
-    const ListTile productHeader = ListTile(title: Text('Products for Sale'));
+    const ListTile productHeader = ListTile(title: Text('Select Subcription Plan'));
     List<ListTile> productList = <ListTile>[];
     if (_notFoundIds.isNotEmpty) {
       productList.add(ListTile(
