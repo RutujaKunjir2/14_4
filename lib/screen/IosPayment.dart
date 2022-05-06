@@ -1,12 +1,18 @@
 import 'dart:async';
 import 'dart:io';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:in_app_purchase_android/billing_client_wrappers.dart';
 import 'package:in_app_purchase_android/in_app_purchase_android.dart';
 import 'package:in_app_purchase_storekit/in_app_purchase_storekit.dart';
 import 'package:in_app_purchase_storekit/store_kit_wrappers.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:CFE/Networking/networkUtil.dart';
+import 'Dashboard_screen.dart';
+import 'dart:convert';
 import 'consumable_store.dart';
+import 'PaymentHistory.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -40,6 +46,7 @@ class _MyAppState extends State<IosPayment> {
   bool _purchasePending = false;
   bool _loading = true;
   String? _queryProductError;
+  NetworkUtil _netUtil = new NetworkUtil();
 
   @override
   void initState() {
@@ -137,6 +144,14 @@ class _MyAppState extends State<IosPayment> {
         ListView(
           children: [
             _buildConnectionCheckTile(),
+            Container(
+              width: 208,
+              height: 228,
+              alignment: Alignment.center,
+              //padding: EdgeInsets.all(10),
+              padding: EdgeInsets.fromLTRB(10, 10, 10, 5),
+              child: Image(image: AssetImage('assets/kid-money.png')),
+            ),
             _buildProductList(),
             //_buildConsumableBox(),
             // _buildRestoreButton(),
@@ -170,15 +185,39 @@ class _MyAppState extends State<IosPayment> {
           automaticallyImplyLeading: true,
           leading: IconButton(
             onPressed: () {
-              Navigator.pop(context);
+              Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(
+                  builder: (BuildContext context) => const Dashboard(),
+                ),
+                    (route) => false,
+              );
             },
-            icon: Icon(Icons.arrow_back,color: Colors.black,),
+            icon: Icon(Icons.arrow_back),
           ),
           backgroundColor: Color(0xffFCD800),
           title: Text("Payment",
               style: const TextStyle(
-                  color: Color(0xff000000),
-                  fontWeight: FontWeight.bold)),
+                  color: Color(0xff000000), fontWeight: FontWeight.bold)),
+          iconTheme: IconThemeData(color: Colors.black),
+          actions: <Widget>[
+            Padding(
+                padding: EdgeInsets.only(right: 20.0),
+                child: GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      CupertinoPageRoute(
+                        builder: (BuildContext context) => PaymentHistory(),
+                      ),
+                    );
+                  },
+                  child: Icon(
+                    Icons.history,
+                    size: 26.0,
+                  ),
+                )),
+          ],
         ),
         body: Stack(
           children: stack,
@@ -204,7 +243,9 @@ class _MyAppState extends State<IosPayment> {
         const Divider(),
         ListTile(
           title: Text('Not connected',
-              style: TextStyle(color: ThemeData.light().errorColor)),
+              style: TextStyle(color: ThemeData
+                  .light()
+                  .errorColor)),
           subtitle: const Text(
               'Unable to connect to the payments processor. Has this app been configured correctly? See the example README for instructions.'),
         ),
@@ -409,10 +450,10 @@ class _MyAppState extends State<IosPayment> {
     });
   }
 
-  Future<bool> _verifyPurchase(PurchaseDetails purchaseDetails) {
+  Future<bool> _verifyPurchase(PurchaseDetails purchaseDetails) async {
     // IMPORTANT!! Always verify a purchase before delivering the product.
     // For the purpose of an example, we directly return true.
-    // Map body = {
+    // Map bodyRes = {
     //   "serverVerification":
     //   purchaseDetails.verificationData.serverVerificationData,
     //   "localVerification":
@@ -420,30 +461,16 @@ class _MyAppState extends State<IosPayment> {
     //   "productID": purchaseDetails.productID,
     //   "purchaseID": purchaseDetails.purchaseID,
     // };
-    //
-    // var data = await iapService(body);
-    // if (data['status'] == true) {
-    //   Fluttertoast.showToast(
-    //       msg: "Payment Successful",
-    //       toastLength: Toast.LENGTH_SHORT,
-    //       gravity: ToastGravity.BOTTOM,
-    //       timeInSecForIosWeb: 1,
-    //       backgroundColor: Colors.red,
-    //       textColor: Colors.white,
-    //       fontSize: 16.0);
-    //   return Future<bool>.value(true);
-    // } else {
-    //   Fluttertoast.showToast(
-    //       msg: "Payment Failed",
-    //       toastLength: Toast.LENGTH_SHORT,
-    //       gravity: ToastGravity.BOTTOM,
-    //       timeInSecForIosWeb: 1,
-    //       backgroundColor: Colors.red,
-    //       textColor: Colors.white,
-    //       fontSize: 16.0);
-    //   return Future<bool>.value(false);
-    // }
-    return Future<bool>.value(true);
+    //print("purchaseDetails_status: " + purchaseDetails.status.toString());
+
+    var res = await iapService(purchaseDetails);
+
+    if (res) {
+      return Future<bool>.value(true);
+    }
+    else {
+      return Future<bool>.value(false);
+    }
   }
 
   void _handleInvalidPurchase(PurchaseDetails purchaseDetails) {
@@ -523,6 +550,71 @@ class _MyAppState extends State<IosPayment> {
     // }
     return oldSubscription;
   }
+
+  Future<bool> iapService(PurchaseDetails purchaseDetails) async
+  {
+    if (purchaseDetails.status == PurchaseStatus.purchased ||
+        purchaseDetails.status == PurchaseStatus.restored)
+    {
+      var body = {
+        "receipt_data" : purchaseDetails.verificationData.serverVerificationData,
+        "is_renewable" : "1",
+      };
+
+      //print("receipt_data : " + body.toString());
+
+      _netUtil.post(NetworkUtil.verifyReceipt,body,true).then((dynamic res)
+      {
+        //print("VerifyReceipt : " + res.toString());
+
+        if ((res != null && res["MessageType"] == 1)) {
+          Fluttertoast.showToast(
+              msg: 'Successfully Subscribed.',
+              toastLength: Toast.LENGTH_LONG,
+              gravity: ToastGravity.SNACKBAR,
+              timeInSecForIosWeb: 1,
+              backgroundColor: Color(0xff69F0AE),
+              textColor: Color(0xff19442C),
+              fontSize: 16.0);
+
+          Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(
+              builder: (BuildContext context) => const Dashboard(),
+            ),
+                (route) => false,
+          );
+          return Future<bool>.value(true);
+        } else {
+          Fluttertoast.showToast(
+              msg: 'Transaction failed.Please try again!',
+              toastLength: Toast.LENGTH_LONG,
+              gravity: ToastGravity.SNACKBAR,
+              timeInSecForIosWeb: 1,
+              backgroundColor: Color(0xffE74C3C),
+              textColor: Colors.white,
+              fontSize: 16.0);
+
+          return Future<bool>.value(false);
+        }
+
+      }).catchError((e)
+      {
+        print(e);
+        Fluttertoast.showToast(
+            msg: 'Something went wrong.',
+            toastLength: Toast.LENGTH_LONG,
+            gravity: ToastGravity.SNACKBAR,
+            timeInSecForIosWeb: 1,
+            backgroundColor: Color(0xffE74C3C),
+            textColor: Colors.white,
+            fontSize: 16.0
+        );
+      });
+    }
+    return Future<bool>.value(false);
+  }
+
 }
 
 /// Example implementation of the

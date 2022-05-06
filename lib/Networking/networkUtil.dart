@@ -14,6 +14,7 @@ class NetworkUtil {
   static String StripePublishablekey = "";
   //static String baseUrl = "http://cfe.carvingit.com/";
   static String baseUrl = "https://www.childrenforenvironment.com/";
+  static String verifyReceipt = "api/subscription/app-store/verify-receipt";
   static String getToken = "api/user/get-token";
   static String registerUser = "api/user/register";
   static String createUserProfile = "api/saveprofile";
