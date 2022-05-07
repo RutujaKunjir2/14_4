@@ -556,9 +556,18 @@ class _MyAppState extends State<IosPayment> {
     if (purchaseDetails.status == PurchaseStatus.purchased ||
         purchaseDetails.status == PurchaseStatus.restored)
     {
+      var amountSub = "0";
+      for(final prod in _products){
+        print('$prod');
+        if (prod.id == purchaseDetails.productID){
+          amountSub = prod.price;
+        }
+      }
+
       var body = {
         "receipt_data" : purchaseDetails.verificationData.serverVerificationData,
         "is_renewable" : "1",
+        "amount" : ""+amountSub,
       };
 
       //print("receipt_data : " + body.toString());
