@@ -484,8 +484,10 @@ class _MyAppState extends State<IosPayment> {
       } else {
         if (purchaseDetails.status == PurchaseStatus.error) {
           handleError(purchaseDetails.error!);
-        } else if (purchaseDetails.status == PurchaseStatus.purchased ||
-            purchaseDetails.status == PurchaseStatus.restored) {
+        }
+        else if (purchaseDetails.status == PurchaseStatus.purchased ||
+            purchaseDetails.status == PurchaseStatus.restored)
+        {
           bool valid = await _verifyPurchase(purchaseDetails);
           if (valid) {
             deliverProduct(purchaseDetails);
@@ -595,15 +597,16 @@ class _MyAppState extends State<IosPayment> {
           );
           return Future<bool>.value(true);
         } else {
-          Fluttertoast.showToast(
+         /* Fluttertoast.showToast(
               msg: 'Transaction failed.Please try again!',
               toastLength: Toast.LENGTH_LONG,
               gravity: ToastGravity.SNACKBAR,
               timeInSecForIosWeb: 1,
               backgroundColor: Color(0xffE74C3C),
               textColor: Colors.white,
-              fontSize: 16.0);
+              fontSize: 16.0);*/
 
+          print("Transaction failed.Please try again!");
           return Future<bool>.value(false);
         }
 
