@@ -507,7 +507,7 @@ class _BuildProfileState extends State<BuildProfile> {
                 child: TextFormField(
                     autofocus: false,
                     controller: parentmobileController,
-                    keyboardType: TextInputType.number,
+                    keyboardType: TextInputType.numberWithOptions(signed: true, decimal: true),
                     inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                     decoration: InputDecoration(
                       isDense: true, // Added this
