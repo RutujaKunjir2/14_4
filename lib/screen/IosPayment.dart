@@ -291,9 +291,9 @@ class _MyAppState extends State<IosPayment> {
             title: Text(
               productDetails.title,
             ),
-            subtitle: Text(
-              productDetails.description,
-            ),
+            // subtitle: Text(
+            //   productDetails.description,
+            // ),
             trailing: previousPurchase != null
                 ? IconButton(
                 onPressed: () => confirmPriceChange(context),
@@ -304,7 +304,7 @@ class _MyAppState extends State<IosPayment> {
                 backgroundColor: Colors.green[800],
                 primary: Colors.white,
               ),
-              onPressed: () {
+              onPressed: () async {
                 late PurchaseParam purchaseParam;
 
                 if (Platform.isAndroid) {
@@ -332,6 +332,10 @@ class _MyAppState extends State<IosPayment> {
                   );
                 }
 
+                var transactions = await SKPaymentQueueWrapper().transactions();
+                transactions.forEach((skPaymentTransactionWrapper) {
+                  SKPaymentQueueWrapper().finishTransaction(skPaymentTransactionWrapper);
+                });
                 if ((productDetails.id == halfYearPlan) || (productDetails.id == yearlyPlan)) {
                   _inAppPurchase.buyConsumable(
                       purchaseParam: purchaseParam,
@@ -453,15 +457,15 @@ class _MyAppState extends State<IosPayment> {
   Future<bool> _verifyPurchase(PurchaseDetails purchaseDetails) async {
     // IMPORTANT!! Always verify a purchase before delivering the product.
     // For the purpose of an example, we directly return true.
-    // Map bodyRes = {
-    //   "serverVerification":
-    //   purchaseDetails.verificationData.serverVerificationData,
-    //   "localVerification":
-    //   purchaseDetails.verificationData.localVerificationData,
-    //   "productID": purchaseDetails.productID,
-    //   "purchaseID": purchaseDetails.purchaseID,
-    // };
-    //print("purchaseDetails_status: " + purchaseDetails.status.toString());
+    Map bodyRes = {
+      "serverVerification":
+      purchaseDetails.verificationData.serverVerificationData,
+      "localVerification":
+      purchaseDetails.verificationData.localVerificationData,
+      "productID": purchaseDetails.productID,
+      "purchaseID": purchaseDetails.purchaseID,
+    };
+    print("purchaseDetails_status: " + bodyRes.toString());
 
     var res = await iapService(purchaseDetails);
 
@@ -479,6 +483,7 @@ class _MyAppState extends State<IosPayment> {
 
   void _listenToPurchaseUpdated(List<PurchaseDetails> purchaseDetailsList) {
     purchaseDetailsList.forEach((PurchaseDetails purchaseDetails) async {
+      print("WelcomeBack = "+purchaseDetails.status.toString());
       if (purchaseDetails.status == PurchaseStatus.pending) {
         showPendingUI();
       } else {
@@ -572,11 +577,11 @@ class _MyAppState extends State<IosPayment> {
         "amount" : ""+amountSub,
       };
 
-      //print("receipt_data : " + body.toString());
+      print("receipt_data : " + body.toString());
 
       _netUtil.post(NetworkUtil.verifyReceipt,body,true).then((dynamic res)
       {
-        //print("VerifyReceipt : " + res.toString());
+        print("VerifyReceipt : " + res.toString());
 
         if ((res != null && res["MessageType"] == 1)) {
           Fluttertoast.showToast(
