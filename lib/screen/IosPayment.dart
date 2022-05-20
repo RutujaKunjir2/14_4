@@ -22,8 +22,13 @@ void main() {
 
 const bool _kAutoConsume = true;
 
-const String halfYearPlan = 'HalfYearlyCFESubscription';
-const String yearlyPlan = 'YearlyCFESubscription';
+// Old In App Submission one with version 1.0.12
+// const String halfYearPlan = 'HalfYearlyCFESubscription';
+// const String yearlyPlan = 'YearlyCFESubscription';
+
+// New In App Submission with new version 1.0.12
+const String halfYearPlan = 'HalfYearlyPlan';
+const String yearlyPlan = 'YearlyPlan';
 
 const List<String> _kProductIds = <String>[
   halfYearPlan,
@@ -291,9 +296,9 @@ class _MyAppState extends State<IosPayment> {
             title: Text(
               productDetails.title,
             ),
-            // subtitle: Text(
-            //   productDetails.description,
-            // ),
+            subtitle: Text(
+              productDetails.description,
+            ),
             trailing: previousPurchase != null
                 ? IconButton(
                 onPressed: () => confirmPriceChange(context),
