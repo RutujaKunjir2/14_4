@@ -317,7 +317,8 @@ class _DashboardWidgetState extends State<Dashboard>
       playStoreVersion = res['AppversionAndroid'].toString();
       appStoreVersion = res['AppversionIos'].toString();
 
-      //print("user : " + user);
+      print("user : " + res.toString());
+      print("userToken : " + NetworkUtil.token);
 
       if (res != null && res["MessageType"] == 1) {
         if (jsonData['profile'] != null) {

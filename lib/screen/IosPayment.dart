@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -26,7 +27,7 @@ const bool _kAutoConsume = true;
 // const String halfYearPlan = 'HalfYearlyCFESubscription';
 // const String yearlyPlan = 'YearlyCFESubscription';
 
-// New In App Submission with new version 1.0.12
+// New In App Submission with new version 1.0.13
 const String halfYearPlan = 'HalfYearlyPlan';
 const String yearlyPlan = 'YearlyPlan';
 
@@ -471,6 +472,7 @@ class _MyAppState extends State<IosPayment> {
       "purchaseID": purchaseDetails.purchaseID,
     };
     print("purchaseDetails_status: " + bodyRes.toString());
+    debugPrint("serverVerification = "+purchaseDetails.verificationData.serverVerificationData.toString());
 
     var res = await iapService(purchaseDetails);
 
