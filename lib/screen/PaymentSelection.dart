@@ -45,6 +45,7 @@ class PaymentSelectionState extends State<PaymentSelection> {
   int selectPlanIndex = 0;
   bool _submit = false;
   late var endDate;
+  var subPlan = '';
   late SharedPreferences prefs;
 
   @override
@@ -277,12 +278,22 @@ class PaymentSelectionState extends State<PaymentSelection> {
                 alignment: Alignment.topLeft,
                 //padding: EdgeInsets.all(10),
                 //padding: EdgeInsets.fromLTRB(20, 5, 20, 5),
-                margin: const EdgeInsets.only(left: 30.0, right: 20.0,bottom: 10.0,top: 20.0),
+                margin: const EdgeInsets.only(left: 30.0, right: 20.0,bottom: 5.0,top: 20.0),
                 child: Text(
                         'Thank you for subscribing to the Children For Environment App.',
                         style: TextStyle(fontSize: 14),
                       ),
                 ),
+            Container(
+              alignment: Alignment.topLeft,
+              //padding: EdgeInsets.all(10),
+              //padding: EdgeInsets.fromLTRB(20, 5, 20, 5),
+              margin: const EdgeInsets.only(left: 30.0, right: 20.0,bottom: 5.0),
+              child: Text(
+                'You have subscribed to the ' + subPlan + ' plan with full access.',
+                style: TextStyle(fontSize: 14),
+              ),
+            ),
             Container(
                 alignment: Alignment.topLeft,
                 margin: const EdgeInsets.only(left: 30.0, right: 20.0),
@@ -461,7 +472,7 @@ class PaymentSelectionState extends State<PaymentSelection> {
 
       Map<String, dynamic> jsonData = json.decode(user) as Map<String, dynamic>;
 
-      //print("user : " + user);
+      print("user : " + res.toString());
 
       //playStoreVersion = double.parse(res['Appversion'].toString());
 
@@ -487,6 +498,32 @@ class PaymentSelectionState extends State<PaymentSelection> {
             endDate = '';
           }
 
+          try
+          {
+            if (Platform.isAndroid)
+            {
+              if(res["razor_plan"] != null)
+              {
+                subPlan = res["razor_plan"];
+                subPlan = subPlan.replaceAll(RegExp('_'), ' ');
+              }
+              else{
+                subPlan = '';
+              }
+            }
+            else if (Platform.isIOS)
+            {
+              if(res["app_store_plan"] != null)
+              {
+                subPlan = res["app_store_plan"];
+              }
+              else{
+                subPlan = '';
+              }
+            }
+          } on PlatformException {
+            print('Failed to get platform version');
+          }
 
           if (res["subscribed"] == 0) {
             NetworkUtil.isSubScribedUser = false;
