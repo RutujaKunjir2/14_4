@@ -111,55 +111,81 @@ class _DashboardWidgetState extends State<Dashboard>
 
     //print("selected index : " + _selectedIndex.toString());
 
-    if (_selectedIndex == 3) {
-      Navigator.push(
-        context,
-        CupertinoPageRoute(
-          builder: (BuildContext context) => BuildProfile(
-              isEdit: false,
-              isFromHome: true,
-              parents_name: NetworkUtil.UserName),
-        ),
-      ).then((value) => setState(() => {_selectedIndex = 0, getUserData()}));
-    } else if (_selectedIndex == 2) {
-      if (NetworkUtil.isSubScribedUser) {
+    if (_selectedIndex == 3)
+    {
+      if(NetworkUtil.isLogin)
+      {
         Navigator.push(
           context,
           CupertinoPageRoute(
-            builder: (BuildContext context) => FavoritesList(),
+            builder: (BuildContext context) => BuildProfile(
+                isEdit: false,
+                isFromHome: true,
+                parents_name: NetworkUtil.UserName),
           ),
-        ).then((value) => setState(() => {_selectedIndex = 0}));
-      } else {
-        Fluttertoast.showToast(
-            msg: NetworkUtil.subscription_end_date == ''
-                ? 'Start your subscription'
-                : 'Renew Your Membership',
-            toastLength: Toast.LENGTH_LONG,
-            gravity: ToastGravity.SNACKBAR,
-            timeInSecForIosWeb: 1,
-            backgroundColor: Color(0xffE74C3C),
-            textColor: Colors.white,
-            fontSize: 16.0);
+        ).then((value) => setState(() => {_selectedIndex = 0, getUserData()}));
       }
-    } else if (_selectedIndex == 1) {
-      if (NetworkUtil.isSubScribedUser) {
-        Navigator.push(
-          context,
-          CupertinoPageRoute(
-            builder: (BuildContext context) => FeedScreen(),
-          ),
-        ).then((value) => setState(() => {_selectedIndex = 0}));
-      } else {
-        Fluttertoast.showToast(
-            msg: NetworkUtil.subscription_end_date == ''
-                ? 'Start your subscription'
-                : 'Renew Your Membership',
-            toastLength: Toast.LENGTH_LONG,
-            gravity: ToastGravity.SNACKBAR,
-            timeInSecForIosWeb: 1,
-            backgroundColor: Color(0xffE74C3C),
-            textColor: Colors.white,
-            fontSize: 16.0);
+      else
+      {
+        showAlertLogin(context);
+      }
+    }
+    else if (_selectedIndex == 2)
+    {
+      if(NetworkUtil.isLogin)
+      {
+        if (NetworkUtil.isSubScribedUser) {
+          Navigator.push(
+            context,
+            CupertinoPageRoute(
+              builder: (BuildContext context) => FavoritesList(),
+            ),
+          ).then((value) => setState(() => {_selectedIndex = 0}));
+        } else {
+          Fluttertoast.showToast(
+              msg: NetworkUtil.subscription_end_date == ''
+                  ? 'Start your subscription'
+                  : 'Renew Your Membership',
+              toastLength: Toast.LENGTH_LONG,
+              gravity: ToastGravity.SNACKBAR,
+              timeInSecForIosWeb: 1,
+              backgroundColor: Color(0xffE74C3C),
+              textColor: Colors.white,
+              fontSize: 16.0);
+        }
+      }
+      else
+      {
+        showAlertLogin(context);
+      }
+
+    } else if (_selectedIndex == 1)
+    {
+      if(NetworkUtil.isLogin)
+      {
+        if (NetworkUtil.isSubScribedUser) {
+          Navigator.push(
+            context,
+            CupertinoPageRoute(
+              builder: (BuildContext context) => FeedScreen(),
+            ),
+          ).then((value) => setState(() => {_selectedIndex = 0}));
+        } else {
+          Fluttertoast.showToast(
+              msg: NetworkUtil.subscription_end_date == ''
+                  ? 'Start your subscription'
+                  : 'Renew Your Membership',
+              toastLength: Toast.LENGTH_LONG,
+              gravity: ToastGravity.SNACKBAR,
+              timeInSecForIosWeb: 1,
+              backgroundColor: Color(0xffE74C3C),
+              textColor: Colors.white,
+              fontSize: 16.0);
+        }
+      }
+      else
+      {
+        showAlertLogin(context);
       }
     } else if (_selectedIndex == 0) {}
   }
@@ -226,9 +252,31 @@ class _DashboardWidgetState extends State<Dashboard>
 
     secureStorage = await SecureStorage();
 
+    bool? isLogin = await prefs.getBool('isLogin');
+
     await _netUtil.isConnected().then((internet) {
       if (internet) {
-        getUserData();
+        if(isLogin != null){
+          if(isLogin) {
+            getUserData();
+          }
+          else{
+            setState(() {
+              // calling API to show the data
+              // you can also do it with any button click.
+              categoryListView = [];
+              categotiesListFuture = getcategoriesList();
+            });
+          }
+        }
+        else{
+          setState(() {
+            // calling API to show the data
+            // you can also do it with any button click.
+            categoryListView = [];
+            categotiesListFuture = getcategoriesList();
+          });
+        }
       } else {
         NetworkUtil.showDialogNoInternet(
             'You are disconnected to the Internet.',
@@ -584,29 +632,32 @@ class _DashboardWidgetState extends State<Dashboard>
                 },
               ),
               Divider(height: 3.0),
-              ListTile(
-                leading: Icon(Icons.settings),
-                title: Text('Profile Setting', style: TextStyle(fontSize: 18)),
-                onTap: () {
-                  Navigator.of(context).pop();
-                  // Here you can give your route to navigate
-                  Navigator.push(
-                    context,
-                    CupertinoPageRoute(
-                      builder: (BuildContext context) => BuildProfile(
-                          isEdit: false,
-                          isFromHome: true,
-                          parents_name: NetworkUtil.UserName),
-                    ),
-                  ).then((value) => {
-                        if (this.mounted)
-                          {
-                            setState(() {
-                              getUserData();
-                            })
-                          }
-                      });
-                },
+              Visibility(
+                child: ListTile(
+                  leading: Icon(Icons.settings),
+                  title: Text('Profile Setting', style: TextStyle(fontSize: 18)),
+                  onTap: () {
+                    Navigator.of(context).pop();
+                    // Here you can give your route to navigate
+                    Navigator.push(
+                      context,
+                      CupertinoPageRoute(
+                        builder: (BuildContext context) => BuildProfile(
+                            isEdit: false,
+                            isFromHome: true,
+                            parents_name: NetworkUtil.UserName),
+                      ),
+                    ).then((value) => {
+                      if (this.mounted)
+                        {
+                          setState(() {
+                            getUserData();
+                          })
+                        }
+                    });
+                  },
+                ),
+                visible: NetworkUtil.isLogin,
               ),
               Divider(height: 3.0),
               ListTile(
@@ -615,35 +666,42 @@ class _DashboardWidgetState extends State<Dashboard>
                 onTap: () {
                   Navigator.of(context).pop();
 
-                  if (NetworkUtil.isSubScribedUser) {
-                    Navigator.push(
-                      context,
-                      CupertinoPageRoute(
-                        builder: (BuildContext context) => PaymentSelection(),
-                      ),
-                    );
-                  } else {
-                    try
-                    {
-                      if (Platform.isAndroid) {
-                        Navigator.push(
-                          context,
-                          CupertinoPageRoute(
-                            builder: (BuildContext context) => WebViewEx(),
-                          ),
-                        );
-                      } else if (Platform.isIOS) {
-                        Navigator.push(
-                          context,
-                          CupertinoPageRoute(
-                            builder: (BuildContext context) => IosPayment(),
-                          ),
-                        );
+                  if(NetworkUtil.isLogin)
+                  {
+                    if (NetworkUtil.isSubScribedUser) {
+                      Navigator.push(
+                        context,
+                        CupertinoPageRoute(
+                          builder: (BuildContext context) => PaymentSelection(),
+                        ),
+                      );
+                    } else {
+                      try
+                      {
+                        if (Platform.isAndroid) {
+                          Navigator.push(
+                            context,
+                            CupertinoPageRoute(
+                              builder: (BuildContext context) => WebViewEx(),
+                            ),
+                          );
+                        } else if (Platform.isIOS) {
+                          Navigator.push(
+                            context,
+                            CupertinoPageRoute(
+                              builder: (BuildContext context) => IosPayment(),
+                            ),
+                          );
+                        }
+                      } on PlatformException {
+                        print('Failed to get platform version');
                       }
-                    } on PlatformException {
-                      print('Failed to get platform version');
-                    }
 
+                    }
+                  }
+                  else
+                  {
+                    showAlertLogin(context);
                   }
                 },
               ),
@@ -736,27 +794,30 @@ class _DashboardWidgetState extends State<Dashboard>
                 },
               ),
               Divider(height: 3.0),
-              ListTile(
-                leading: Icon(Icons.logout),
-                title: Text('Logout', style: TextStyle(fontSize: 18)),
-                onTap: () async {
-                  // Here you can give your route to navigate
-                  NetworkUtil.isLogin = false;
-                  NetworkUtil.isSocialLogin = false;
-                  NetworkUtil.isSubScribedUser = true;
-                  NetworkUtil.isAdult = false;
-                  NetworkUtil.subscription_end_date = '';
+              Visibility(
+                child: ListTile(
+                  leading: Icon(Icons.logout),
+                  title: Text('Logout', style: TextStyle(fontSize: 18)),
+                  onTap: () async {
+                    // Here you can give your route to navigate
+                    NetworkUtil.isLogin = false;
+                    NetworkUtil.isSocialLogin = false;
+                    NetworkUtil.isSubScribedUser = true;
+                    NetworkUtil.isAdult = false;
+                    NetworkUtil.subscription_end_date = '';
 
-                  prefs.setBool('isLogin', false);
-                  await secureStorage.deleteSecureData("password");
-                  prefs.clear();
-                  Navigator.pushReplacement(
-                    context,
-                    CupertinoPageRoute(
-                      builder: (BuildContext context) => const WelcomeScreen(),
-                    ),
-                  );
-                },
+                    prefs.setBool('isLogin', false);
+                    await secureStorage.deleteSecureData("password");
+                    prefs.clear();
+                    Navigator.pushReplacement(
+                      context,
+                      CupertinoPageRoute(
+                        builder: (BuildContext context) => const WelcomeScreen(),
+                      ),
+                    );
+                  },
+                ),
+                visible: NetworkUtil.isLogin,
               ),
             ],
           ),
@@ -874,39 +935,47 @@ class _DashboardWidgetState extends State<Dashboard>
                                                           setState(() {
                                                             // ontap of each card, set the defined int to the grid view index
 
-                                                            if (NetworkUtil
-                                                                .isSubScribedUser) {
-                                                              Navigator.push(
-                                                                  context,
-                                                                  CupertinoPageRoute(
-                                                                      builder: (context) =>
-                                                                          categoryContent(
-                                                                            categoriesModel_:
-                                                                                categoryListView![index],
-                                                                          )));
-                                                            } else {
-                                                              try
-                                                              {
-                                                                if (Platform.isAndroid) {
-                                                                  Navigator.push(
+                                                            if(NetworkUtil.isLogin)
+                                                            {
+                                                              if (NetworkUtil
+                                                                  .isSubScribedUser) {
+                                                                Navigator.push(
                                                                     context,
                                                                     CupertinoPageRoute(
-                                                                      builder: (BuildContext context) => WebViewEx(),
-                                                                    ),
-                                                                  );
-                                                                } else if (Platform.isIOS) {
-                                                                  Navigator.push(
-                                                                    context,
-                                                                    CupertinoPageRoute(
-                                                                      builder: (BuildContext context) => IosPayment(),
-                                                                    ),
-                                                                  );
+                                                                        builder: (context) =>
+                                                                            categoryContent(
+                                                                              categoriesModel_:
+                                                                              categoryListView![index],
+                                                                            )));
+                                                              } else {
+                                                                try
+                                                                {
+                                                                  if (Platform.isAndroid) {
+                                                                    Navigator.push(
+                                                                      context,
+                                                                      CupertinoPageRoute(
+                                                                        builder: (BuildContext context) => WebViewEx(),
+                                                                      ),
+                                                                    );
+                                                                  } else if (Platform.isIOS) {
+                                                                    Navigator.push(
+                                                                      context,
+                                                                      CupertinoPageRoute(
+                                                                        builder: (BuildContext context) => IosPayment(),
+                                                                      ),
+                                                                    );
+                                                                  }
+                                                                } on PlatformException {
+                                                                  print('Failed to get platform version');
                                                                 }
-                                                              } on PlatformException {
-                                                                print('Failed to get platform version');
-                                                              }
 
+                                                              }
                                                             }
+                                                            else
+                                                            {
+                                                              showAlertLogin(context);
+                                                            }
+
                                                           });
                                                         },
                                                         child: generateColum(
@@ -1199,46 +1268,55 @@ class _DashboardWidgetState extends State<Dashboard>
               focusNode.unfocus();
             });
 
-            if (NetworkUtil.isSubScribedUser) {
-              Navigator.push(
-                context,
-                CupertinoPageRoute(
-                  builder: (BuildContext context) => FastFactsScreen(),
-                ),
-              );
-            }else {
-              try
+            if(NetworkUtil.isLogin)
+            {
+              if (NetworkUtil.isSubScribedUser) {
+                Navigator.push(
+                  context,
+                  CupertinoPageRoute(
+                    builder: (BuildContext context) => FastFactsScreen(),
+                  ),
+                );
+              }else
               {
-                if (Platform.isAndroid) {
-                  Navigator.push(
-                    context,
-                    CupertinoPageRoute(
-                      builder: (BuildContext context) => WebViewEx(),
-                    ),
-                  );
-                } else if (Platform.isIOS) {
-                  Navigator.push(
-                    context,
-                    CupertinoPageRoute(
-                      builder: (BuildContext context) => IosPayment(),
-                    ),
-                  );
+                try
+                {
+                  if (Platform.isAndroid) {
+                    Navigator.push(
+                      context,
+                      CupertinoPageRoute(
+                        builder: (BuildContext context) => WebViewEx(),
+                      ),
+                    );
+                  } else if (Platform.isIOS) {
+                    Navigator.push(
+                      context,
+                      CupertinoPageRoute(
+                        builder: (BuildContext context) => IosPayment(),
+                      ),
+                    );
+                  }
+                } on PlatformException {
+                  print('Failed to get platform version');
                 }
-              } on PlatformException {
-                print('Failed to get platform version');
-              }
 
-              Fluttertoast.showToast(
-                  msg: NetworkUtil.subscription_end_date == ''
-                      ? 'Start your subscription'
-                      : 'Renew Your Membership',
-                  toastLength: Toast.LENGTH_LONG,
-                  gravity: ToastGravity.SNACKBAR,
-                  timeInSecForIosWeb: 1,
-                  backgroundColor: Color(0xffE74C3C),
-                  textColor: Colors.white,
-                  fontSize: 16.0);
+                Fluttertoast.showToast(
+                    msg: NetworkUtil.subscription_end_date == ''
+                        ? 'Start your subscription'
+                        : 'Renew Your Membership',
+                    toastLength: Toast.LENGTH_LONG,
+                    gravity: ToastGravity.SNACKBAR,
+                    timeInSecForIosWeb: 1,
+                    backgroundColor: Color(0xffE74C3C),
+                    textColor: Colors.white,
+                    fontSize: 16.0);
+              }
             }
+            else
+            {
+              showAlertLogin(context);
+            }
+
           },
           hoverElevation: 1.5,
           shape: StadiumBorder(side: BorderSide(color: Colors.white, width: 2)),
@@ -1379,6 +1457,45 @@ class _DashboardWidgetState extends State<Dashboard>
         sharePositionOrigin: box.globalToLocal(Offset.zero) & box.size);
   }
 
+  showAlertLogin(BuildContext context) {
+    // set up the buttons
+    // set up the button
+    Widget continueButton = TextButton(
+      child: Text("OK"),
+      onPressed: () {
+        Navigator.pushReplacement(
+                    context,
+                    CupertinoPageRoute(
+                        builder: (context) => const WelcomeScreen()));
+      },
+    );
+
+    Widget cancelButton = TextButton(
+        child: Text("Cancel"),
+        onPressed: () {
+          Navigator.of(context).pop();
+        },
+    );
+
+    // set up the AlertDialog
+    AlertDialog alert = AlertDialog(
+      title: Text("Alert"),
+      content: Text("Please sign in to the application for access application features."),
+      actions: [
+        continueButton,
+        cancelButton,
+      ],
+    );
+
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
+  }
+
   showAlertDialog(BuildContext context) {
     // set up the buttons
     Widget cancelButton = TextButton(
@@ -1417,74 +1534,83 @@ class _DashboardWidgetState extends State<Dashboard>
     );
   }
 
-  Future<detailListModel> getAppSearchList(int pageindex) async {
-    //print("pageindex : " + pageindex.toString());
-    if (!isLoadingLazy && pageindex > 0) {
-      setState(() {
-        isLoadingLazy = true;
+  Future<detailListModel> getAppSearchList(int pageindex) async
+  {
+    if(NetworkUtil.isLogin)
+    {
+      //print("pageindex : " + pageindex.toString());
+      if (!isLoadingLazy && pageindex > 0) {
+        setState(() {
+          isLoadingLazy = true;
+        });
+      }
+
+      NetworkUtil.getAppSearch = "api/posts/search/" +
+          pageindex.toString() +
+          "/" +
+          pageCount.toString() +
+          "?search=" +
+          _filtercat.text.toString();
+      return _netUtil.get(NetworkUtil.getAppSearch, true).then((dynamic res) {
+        //json.decode used to decode response.body(string to map)
+        //print(res['posts'].toString());
+
+        if (res != null && res["MessageType"] == 1) {
+          getDetailList(res['posts']);
+          return detailListModel.fromJson(res['posts']);
+          //return getDetailList(res['posts']);
+        } else if (res != null && res["MessageType"] == 0) {
+          Fluttertoast.showToast(
+              msg: res["Message"],
+              toastLength: Toast.LENGTH_LONG,
+              gravity: ToastGravity.SNACKBAR,
+              timeInSecForIosWeb: 1,
+              backgroundColor: Color(0xffE74C3C),
+              textColor: Colors.white,
+              fontSize: 16.0);
+
+          return detailListModel.fromJson([]);
+        } else if (res != null && res["MessageType"] == -1) {
+
+          var msg = res["Message"];
+          if(res["Message"].toString().toLowerCase().contains("renew")){
+            if(NetworkUtil.subscription_end_date == ''){
+              msg = 'Start your subscription';
+            }else{
+              msg = 'Renew Your Membership';
+            }
+
+          }
+          Fluttertoast.showToast(
+              msg: msg,
+              toastLength: Toast.LENGTH_LONG,
+              gravity: ToastGravity.SNACKBAR,
+              timeInSecForIosWeb: 1,
+              backgroundColor: Color(0xffE74C3C),
+              textColor: Colors.white,
+              fontSize: 16.0);
+
+          return detailListModel.fromJson([]);
+        } else {
+          Fluttertoast.showToast(
+              msg: 'Something went wrong.',
+              toastLength: Toast.LENGTH_LONG,
+              gravity: ToastGravity.SNACKBAR,
+              timeInSecForIosWeb: 1,
+              backgroundColor: Color(0xffE74C3C),
+              textColor: Colors.white,
+              fontSize: 16.0);
+
+          return detailListModel.fromJson([]);
+          //return getDetailList(res['posts']);
+        }
       });
     }
-
-    NetworkUtil.getAppSearch = "api/posts/search/" +
-        pageindex.toString() +
-        "/" +
-        pageCount.toString() +
-        "?search=" +
-        _filtercat.text.toString();
-    return _netUtil.get(NetworkUtil.getAppSearch, true).then((dynamic res) {
-      //json.decode used to decode response.body(string to map)
-      //print(res['posts'].toString());
-
-      if (res != null && res["MessageType"] == 1) {
-        getDetailList(res['posts']);
-        return detailListModel.fromJson(res['posts']);
-        //return getDetailList(res['posts']);
-      } else if (res != null && res["MessageType"] == 0) {
-        Fluttertoast.showToast(
-            msg: res["Message"],
-            toastLength: Toast.LENGTH_LONG,
-            gravity: ToastGravity.SNACKBAR,
-            timeInSecForIosWeb: 1,
-            backgroundColor: Color(0xffE74C3C),
-            textColor: Colors.white,
-            fontSize: 16.0);
-
-        return detailListModel.fromJson([]);
-      } else if (res != null && res["MessageType"] == -1) {
-
-        var msg = res["Message"];
-        if(res["Message"].toString().toLowerCase().contains("renew")){
-          if(NetworkUtil.subscription_end_date == ''){
-            msg = 'Start your subscription';
-          }else{
-            msg = 'Renew Your Membership';
-          }
-
-        }
-        Fluttertoast.showToast(
-            msg: msg,
-            toastLength: Toast.LENGTH_LONG,
-            gravity: ToastGravity.SNACKBAR,
-            timeInSecForIosWeb: 1,
-            backgroundColor: Color(0xffE74C3C),
-            textColor: Colors.white,
-            fontSize: 16.0);
-
-        return detailListModel.fromJson([]);
-      } else {
-        Fluttertoast.showToast(
-            msg: 'Something went wrong.',
-            toastLength: Toast.LENGTH_LONG,
-            gravity: ToastGravity.SNACKBAR,
-            timeInSecForIosWeb: 1,
-            backgroundColor: Color(0xffE74C3C),
-            textColor: Colors.white,
-            fontSize: 16.0);
-
-        return detailListModel.fromJson([]);
-        //return getDetailList(res['posts']);
-      }
-    });
+    else
+    {
+      showAlertLogin(context);
+      return detailListModel.fromJson([]);
+    }
   }
 
   void getDetailList(List<dynamic> parsedJson) {

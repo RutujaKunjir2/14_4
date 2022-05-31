@@ -4,6 +4,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'Welcome_screen.dart';
+import 'dart:io' show Platform;
+import 'Dashboard_screen.dart';
 
 
 class InfoScreen extends StatelessWidget {
@@ -114,10 +116,28 @@ class InfoScreen extends StatelessWidget {
                   onPressed: () {
                     // FirebaseCrashlytics.instance.log("It's a bug");
                     // FirebaseCrashlytics.instance.crash();
-                    Navigator.pushReplacement(
+                    if (Platform.isAndroid) {
+                      Navigator.pushReplacement(
+                          context,
+                          CupertinoPageRoute(
+                              builder: (context) => const WelcomeScreen()));
+                    }
+                    else if (Platform.isIOS)
+                    {
+                      Navigator.pushAndRemoveUntil(
                         context,
-                        CupertinoPageRoute(
-                            builder: (context) => const WelcomeScreen()));
+                        MaterialPageRoute(
+                          builder: (BuildContext context) => const Dashboard(),
+                        ),
+                            (route) => false,
+                      );
+                    }
+                    else {
+                      Navigator.pushReplacement(
+                          context,
+                          CupertinoPageRoute(
+                              builder: (context) => const WelcomeScreen()));
+                    }
                   },
                 ),
               ),
