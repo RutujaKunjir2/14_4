@@ -861,8 +861,7 @@ class _BuildProfileState extends State<BuildProfile> {
     Widget continueButton = TextButton(
       child: Text("YES"),
       onPressed: () {
-        //deleteAccount();
-        Navigator.of(context).pop();
+        deleteAccount();
       },
     );
 
@@ -895,22 +894,49 @@ class _BuildProfileState extends State<BuildProfile> {
   void deleteAccount() async
   {
     return _netUtil.get(NetworkUtil.deleteUserAccount, true).then((dynamic res)
-    {
+    async {
 
-      print("DeleteAcc = "+res);
+      print("DeleteAcc = "+res.toString());
 
       if (res != null && res["MessageType"] == 1)
       {
-
-      }
-      else{
         Fluttertoast.showToast(
-            msg: "Something went wrong.",
+            msg: "Account deleted.",
             toastLength: Toast.LENGTH_LONG,
             gravity: ToastGravity.SNACKBAR,
             timeInSecForIosWeb: 1,
             backgroundColor: Color(0xff69F0AE),
             textColor: Color(0xff19442C),
+            fontSize: 16.0);
+
+        NetworkUtil.isLogin = false;
+        NetworkUtil.isSocialLogin = false;
+        NetworkUtil.isSubScribedUser = true;
+        NetworkUtil.isAdult = false;
+        NetworkUtil.subscription_end_date = '';
+        NetworkUtil.UserName = '';
+        NetworkUtil.email = '';
+
+        prefs.setBool('isLogin', false);
+        await secureStorage.deleteSecureData("password");
+        prefs.clear();
+
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(
+            builder: (BuildContext context) => const Dashboard(),
+          ),
+              (route) => false,
+        );
+      }
+      else{
+        Fluttertoast.showToast(
+            msg: 'Something went wrong.',
+            toastLength: Toast.LENGTH_LONG,
+            gravity: ToastGravity.SNACKBAR,
+            timeInSecForIosWeb: 1,
+            backgroundColor: Color(0xffE74C3C),
+            textColor: Colors.white,
             fontSize: 16.0);
       }
 

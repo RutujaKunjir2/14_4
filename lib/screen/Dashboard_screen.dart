@@ -805,16 +805,34 @@ class _DashboardWidgetState extends State<Dashboard>
                     NetworkUtil.isSubScribedUser = true;
                     NetworkUtil.isAdult = false;
                     NetworkUtil.subscription_end_date = '';
+                    NetworkUtil.UserName = '';
+                    NetworkUtil.email = '';
 
                     prefs.setBool('isLogin', false);
                     await secureStorage.deleteSecureData("password");
                     prefs.clear();
-                    Navigator.pushReplacement(
-                      context,
-                      CupertinoPageRoute(
-                        builder: (BuildContext context) => const WelcomeScreen(),
-                      ),
-                    );
+
+                    try
+                    {
+                      if (Platform.isAndroid) {
+                        Navigator.pushReplacement(
+                          context,
+                          CupertinoPageRoute(
+                            builder: (BuildContext context) => const WelcomeScreen(),
+                          ),
+                        );
+                      } else if (Platform.isIOS) {
+                        Navigator.pushAndRemoveUntil(
+                          context,
+                          MaterialPageRoute(
+                            builder: (BuildContext context) => const Dashboard(),
+                          ),
+                              (route) => false,
+                        );
+                      }
+                    } on PlatformException {
+                      print('Failed to get platform version');
+                    }
                   },
                 ),
                 visible: NetworkUtil.isLogin,
