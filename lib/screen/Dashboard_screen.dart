@@ -1458,8 +1458,6 @@ class _DashboardWidgetState extends State<Dashboard>
   }
 
   showAlertLogin(BuildContext context) {
-    // set up the buttons
-    // set up the button
     Widget continueButton = TextButton(
       child: Text("OK"),
       onPressed: () {
@@ -1480,7 +1478,7 @@ class _DashboardWidgetState extends State<Dashboard>
     // set up the AlertDialog
     AlertDialog alert = AlertDialog(
       title: Text("Alert"),
-      content: Text("Please sign in to the application for access application features."),
+      content: Text("Please sign in to the application to access the features."),
       actions: [
         continueButton,
         cancelButton,

@@ -13,6 +13,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:io' show Platform;
 
 import '../icons.dart';
 
@@ -280,6 +281,21 @@ class _BuildProfileState extends State<BuildProfile> {
                   size: 26.0,
                 ),
               )
+          ),
+          Visibility(
+            child: Padding(
+                padding: EdgeInsets.only(right: 20.0),
+                child: GestureDetector(
+                  onTap: () {
+                    showAlertDelete(context);
+                  },
+                  child: Icon(
+                    Icons.delete_forever,
+                    size: 26.0,
+                  ),
+                )
+            ),
+            visible: Platform.isIOS,
           ),
         ],
       ),
@@ -839,6 +855,66 @@ class _BuildProfileState extends State<BuildProfile> {
            fontSize: 16.0
        );
      });
+  }
+
+  showAlertDelete(BuildContext context) {
+    Widget continueButton = TextButton(
+      child: Text("YES"),
+      onPressed: () {
+        //deleteAccount();
+        Navigator.of(context).pop();
+      },
+    );
+
+    Widget cancelButton = TextButton(
+      child: Text("NO"),
+      onPressed: () {
+        Navigator.of(context).pop();
+      },
+    );
+
+    // set up the AlertDialog
+    AlertDialog alert = AlertDialog(
+      title: Text("Warning"),
+      content: Text("Your account will be deleted permanently. Are you sure you want to delete your account?"),
+      actions: [
+        continueButton,
+        cancelButton,
+      ],
+    );
+
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
+  }
+
+  void deleteAccount() async
+  {
+    return _netUtil.get(NetworkUtil.deleteUserAccount, true).then((dynamic res)
+    {
+
+      print("DeleteAcc = "+res);
+
+      if (res != null && res["MessageType"] == 1)
+      {
+
+      }
+      else{
+        Fluttertoast.showToast(
+            msg: "Something went wrong.",
+            toastLength: Toast.LENGTH_LONG,
+            gravity: ToastGravity.SNACKBAR,
+            timeInSecForIosWeb: 1,
+            backgroundColor: Color(0xff69F0AE),
+            textColor: Color(0xff19442C),
+            fontSize: 16.0);
+      }
+
+    });
   }
 
   void login(String username, String password) {

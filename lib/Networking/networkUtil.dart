@@ -22,6 +22,7 @@ class NetworkUtil {
   static String getUserDetail = "api/user";
   static String getProfile = "api/account/profile";
   static String forgotPassword = "forgot-password";
+  static String deleteUserAccount = "api/user/delete";
   static String getCategoriesdetail = "";
   static String getAppSearch = "";
   static String getFavoriteList = "";
