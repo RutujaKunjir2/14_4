@@ -15,6 +15,7 @@ import 'package:CFE/screen/PaymentHistory.dart';
 import 'package:CFE/screen/PaymentSelection.dart';
 import 'package:CFE/screen/WebViewScreen.dart';
 import 'package:CFE/services/storage.dart';
+import 'package:badges/badges.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -344,6 +345,31 @@ class _DashboardWidgetState extends State<Dashboard>
 
   void getcatList(List<dynamic> parsedJson) {
     for (var v in parsedJson) {
+      try
+      {
+        int? countPenPrev = prefs.getInt(''+categoriesModel.fromJson(v).id.toString()+'_'
+            +categoriesModel.fromJson(v).categoryName.toString());
+        var countPenNew = categoriesModel.fromJson(v).posts_count;
+
+        // print(''+categoriesModel.fromJson(v).categoryName.toString()
+        //     +' is '+countPenPrev.toString()+' = '+countPenNew.toString());
+
+        if (countPenPrev == null)
+        {
+          prefs.setInt(''+categoriesModel.fromJson(v).id.toString()+'_'
+            +categoriesModel.fromJson(v).categoryName.toString(), countPenNew!);
+        }
+        else{
+          if (countPenNew! > countPenPrev) {
+            //
+          }
+          else{
+            prefs.setInt(''+categoriesModel.fromJson(v).id.toString()+'_'
+                +categoriesModel.fromJson(v).categoryName.toString(), countPenNew);
+          }
+        }
+      }
+      catch(err) {print("preference err : " + err.toString());}
       categoryListView!.add(categoriesModel.fromJson(v));
     }
 
@@ -365,8 +391,8 @@ class _DashboardWidgetState extends State<Dashboard>
       playStoreVersion = res['AppversionAndroid'].toString();
       appStoreVersion = res['AppversionIos'].toString();
 
-      print("user : " + res.toString());
-      print("userToken : " + NetworkUtil.token);
+     //print("user : " + res.toString());
+     // print("userToken : " + NetworkUtil.token);
 
       if (res != null && res["MessageType"] == 1) {
         if (jsonData['profile'] != null) {
@@ -956,7 +982,16 @@ class _DashboardWidgetState extends State<Dashboard>
                                                             if(NetworkUtil.isLogin)
                                                             {
                                                               if (NetworkUtil
-                                                                  .isSubScribedUser) {
+                                                                  .isSubScribedUser)
+                                                              {
+
+                                                                if (categoryListView![index].posts_count! > prefs.getInt(''+categoryListView![index].id.toString()+'_'
+                                                                    +categoryListView![index].categoryName.toString())!)
+                                                                {
+                                                                  prefs.setInt(''+categoryListView![index].id.toString()+'_'
+                                                                      +categoryListView![index].categoryName.toString(), categoryListView![index].posts_count!);
+                                                                }
+
                                                                 Navigator.push(
                                                                     context,
                                                                     CupertinoPageRoute(
@@ -1393,6 +1428,22 @@ class _DashboardWidgetState extends State<Dashboard>
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
+              Column(
+                mainAxisAlignment : MainAxisAlignment.start,
+                crossAxisAlignment : CrossAxisAlignment.end,
+                children: [
+                  Align(
+                   alignment: Alignment.topRight,
+                    child: Visibility(
+                      child: Badge(
+                        badgeContent: Text(''),
+                      ),
+                      visible: item.posts_count! > prefs.getInt(''+item.id.toString()+'_'
+                        +item.categoryName.toString())!,
+                    ),
+                  )
+                ],
+              ),
               Expanded(
                   child: Container(
                 alignment: Alignment.center,

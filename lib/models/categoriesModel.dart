@@ -5,6 +5,7 @@ class categoriesModel {
   String? category_cover_image;
   String? createdAt;
   String? updatedAt;
+  int? posts_count;
 
   categoriesModel(
       {this.id,
@@ -12,7 +13,9 @@ class categoriesModel {
         this.parent,
         this.category_cover_image,
         this.createdAt,
-        this.updatedAt});
+        this.updatedAt,
+        this.posts_count,
+      });
 
   categoriesModel.fromJson(Map<String, dynamic> json) {
     //print("json" + json.toString());
@@ -22,6 +25,7 @@ class categoriesModel {
     category_cover_image = json['category_cover_image'];
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
+    posts_count = json['posts_count'];
   }
 
   Map<String, dynamic> toJson() {
@@ -32,6 +36,7 @@ class categoriesModel {
     data['category_cover_image'] = this.category_cover_image;
     data['created_at'] = this.createdAt;
     data['updated_at'] = this.updatedAt;
+    data['posts_count'] = this.posts_count;
     return data;
   }
 }
