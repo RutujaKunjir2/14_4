@@ -896,7 +896,7 @@ class _BuildProfileState extends State<BuildProfile> {
     return _netUtil.get(NetworkUtil.deleteUserAccount, true).then((dynamic res)
     async {
 
-      print("DeleteAcc = "+res.toString());
+     // print("DeleteAcc = "+res.toString());
 
       if (res != null && res["MessageType"] == 1)
       {

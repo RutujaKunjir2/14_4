@@ -471,8 +471,8 @@ class _MyAppState extends State<IosPayment> {
       "productID": purchaseDetails.productID,
       "purchaseID": purchaseDetails.purchaseID,
     };
-    print("purchaseDetails_status: " + bodyRes.toString());
-    debugPrint("serverVerification = "+purchaseDetails.verificationData.serverVerificationData.toString());
+   //print("purchaseDetails_status: " + bodyRes.toString());
+   // debugPrint("serverVerification = "+purchaseDetails.verificationData.serverVerificationData.toString());
 
     var res = await iapService(purchaseDetails);
 
@@ -490,7 +490,7 @@ class _MyAppState extends State<IosPayment> {
 
   void _listenToPurchaseUpdated(List<PurchaseDetails> purchaseDetailsList) {
     purchaseDetailsList.forEach((PurchaseDetails purchaseDetails) async {
-      print("WelcomeBack = "+purchaseDetails.status.toString());
+     //print("WelcomeBack = "+purchaseDetails.status.toString());
       if (purchaseDetails.status == PurchaseStatus.pending) {
         showPendingUI();
       } else {
@@ -572,7 +572,7 @@ class _MyAppState extends State<IosPayment> {
     {
       var amountSub = "0";
       for(final prod in _products){
-        print('$prod');
+       //print('$prod');
         if (prod.id == purchaseDetails.productID){
           amountSub = prod.price;
         }
@@ -584,11 +584,11 @@ class _MyAppState extends State<IosPayment> {
         "amount" : ""+amountSub,
       };
 
-      print("receipt_data : " + body.toString());
+     // print("receipt_data : " + body.toString());
 
       _netUtil.post(NetworkUtil.verifyReceipt,body,true).then((dynamic res)
       {
-        print("VerifyReceipt : " + res.toString());
+      //  print("VerifyReceipt : " + res.toString());
 
         if ((res != null && res["MessageType"] == 1)) {
           Fluttertoast.showToast(
