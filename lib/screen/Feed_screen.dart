@@ -119,6 +119,7 @@ class FeedScreenList extends State<FeedScreen> {
     return _netUtil.get(NetworkUtil.getFeedList, true).then((dynamic res) {
       //json.decode used to decode response.body(string to map)
       //print(res['posts'].toString());
+    // print("FeedRes = "+NetworkUtil.getFeedList+' Res = '+res.toString());
 
       if (res != null && res["MessageType"] == 1) {
         // setState(() {

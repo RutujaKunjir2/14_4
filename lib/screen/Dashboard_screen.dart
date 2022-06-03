@@ -1386,14 +1386,24 @@ class _DashboardWidgetState extends State<Dashboard>
             //   child:
             BottomNavigationBar(
           elevation: 20,
-          items: const <BottomNavigationBarItem>[
+          items: <BottomNavigationBarItem>[
             BottomNavigationBarItem(
               icon: Icon(Customicons.home),
               label: 'Home',
             ),
             BottomNavigationBarItem(
-              icon: Icon(Customicons.feed),
               label: 'Feed',
+              icon: new Stack(
+                  children: <Widget>[
+                    new Icon(Customicons.feed),
+                    // new Positioned(  // draw a red marble
+                    //   top: 0.0,
+                    //   right: 0.0,
+                    //   child: new Icon(Icons.brightness_1, size: 10.0,
+                    //       color: Colors.redAccent),
+                    // )
+                  ]
+              ),
             ),
             BottomNavigationBarItem(
               icon: Icon(Customicons.fav),
