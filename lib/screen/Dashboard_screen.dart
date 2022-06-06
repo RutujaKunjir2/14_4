@@ -64,6 +64,8 @@ class _DashboardWidgetState extends State<Dashboard>
   bool _hasMore = true;
   int page = 0;
   int pageCount = 10;
+  int FastNewCnt = 0;
+  int FeedNewCnt = 0;
   final itemKey = GlobalKey();
 
   late SharedPreferences prefs;
@@ -164,7 +166,15 @@ class _DashboardWidgetState extends State<Dashboard>
     {
       if(NetworkUtil.isLogin)
       {
-        if (NetworkUtil.isSubScribedUser) {
+        if (NetworkUtil.isSubScribedUser)
+        {
+          if (prefs.getInt('FeedCnt') != null){
+            if (FeedNewCnt > prefs.getInt('FeedCnt')!)
+            {
+              prefs.setInt('FeedCnt', FeedNewCnt);
+            }
+          }
+
           Navigator.push(
             context,
             CupertinoPageRoute(
@@ -294,6 +304,48 @@ class _DashboardWidgetState extends State<Dashboard>
 
       if (res != null && res["MessageType"] == 1) {
         //NetworkUtil.isSubScribedUser = true;
+
+        print("Feed = "+res["posts_count"].toString());
+        try
+        {
+          FeedNewCnt = res["posts_count"];
+          int? prevCount = prefs.getInt('FeedCnt');
+
+          if (prevCount == null)
+          {
+            prefs.setInt('FeedCnt', FeedNewCnt);
+          }
+          else{
+            if (FeedNewCnt > prevCount) {
+              //
+            }
+            else{
+              prefs.setInt('FeedCnt', FeedNewCnt);
+            }
+          }
+        }
+        catch(err) {print(err.toString());}
+
+        print("Fact = "+res["fast_facts_count"].toString());
+        try
+        {
+          int? prevCount = prefs.getInt('FactCnt');
+          FastNewCnt = res["fast_facts_count"];
+
+          if (prevCount == null)
+          {
+            prefs.setInt('FactCnt', FastNewCnt);
+          }
+          else {
+            if (FastNewCnt > prevCount) {
+              //
+            }
+            else {
+              prefs.setInt('FactCnt', FastNewCnt);
+            }
+          }
+        }
+        catch(err) {print(err.toString());}
 
         getcatList(res['categories']);
         return categoriesListModel.fromJson(res['categories']);
@@ -1323,7 +1375,15 @@ class _DashboardWidgetState extends State<Dashboard>
 
             if(NetworkUtil.isLogin)
             {
-              if (NetworkUtil.isSubScribedUser) {
+              if (NetworkUtil.isSubScribedUser)
+              {
+                if (prefs.getInt('FactCnt') != null){
+                  if (FastNewCnt > prefs.getInt('FactCnt')!)
+                  {
+                    prefs.setInt('FactCnt', FastNewCnt);
+                  }
+                }
+
                 Navigator.push(
                   context,
                   CupertinoPageRoute(
@@ -1396,12 +1456,15 @@ class _DashboardWidgetState extends State<Dashboard>
               icon: new Stack(
                   children: <Widget>[
                     new Icon(Customicons.feed),
-                    // new Positioned(  // draw a red marble
-                    //   top: 0.0,
-                    //   right: 0.0,
-                    //   child: new Icon(Icons.brightness_1, size: 10.0,
-                    //       color: Colors.redAccent),
-                    // )
+                    Visibility(
+                      child: new Positioned(  // draw a red marble
+                        top: 0.0,
+                        right: 0.0,
+                        child: new Icon(Icons.brightness_1, size: 10.0,
+                            color: Colors.redAccent),
+                      ),
+                      visible: FeedNewCnt > (prefs.getInt('FeedCnt'))!,
+                    ),
                   ]
               ),
             ),
