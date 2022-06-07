@@ -1363,7 +1363,94 @@ class _DashboardWidgetState extends State<Dashboard>
         ),
         //),
         //Container (
-        floatingActionButton: _getFAB(),
+        floatingActionButton: Badge(
+          badgeColor: Colors.red,
+          borderRadius: BorderRadius.circular(30),
+          showBadge: FastNewCnt > (prefs.getInt('FactCnt'))!,
+          badgeContent: const Padding(
+            padding: EdgeInsets.all(3.0),
+            child: Text(
+              '',
+              style: TextStyle(color: Colors.white),
+            ),
+          ),
+          child: FloatingActionButton(
+            backgroundColor: Color(0xffFF621C),
+            //splashColor: Colors.black,
+            onPressed: () {
+              setState(() {
+                _filtercat.text = '';
+                isSearchCalled = false;
+                focusNode.unfocus();
+              });
+
+              if(NetworkUtil.isLogin)
+              {
+                if (NetworkUtil.isSubScribedUser)
+                {
+                  if (prefs!.getInt('FactCnt') != null){
+                    if (FastNewCnt > prefs!.getInt('FactCnt')!)
+                    {
+                      prefs!.setInt('FactCnt', FastNewCnt);
+                    }
+                  }
+
+                  Navigator.push(
+                    context,
+                    CupertinoPageRoute(
+                      builder: (BuildContext context) => FastFactsScreen(),
+                    ),
+                  );
+                }else
+                {
+                  try
+                  {
+                    if (Platform.isAndroid) {
+                      Navigator.push(
+                        context,
+                        CupertinoPageRoute(
+                          builder: (BuildContext context) => WebViewEx(),
+                        ),
+                      );
+                    } else if (Platform.isIOS) {
+                      Navigator.push(
+                        context,
+                        CupertinoPageRoute(
+                          builder: (BuildContext context) => IosPayment(),
+                        ),
+                      );
+                    }
+                  } on PlatformException {
+                    print('Failed to get platform version');
+                  }
+
+                  Fluttertoast.showToast(
+                      msg: NetworkUtil.subscription_end_date == ''
+                          ? 'Start your subscription'
+                          : 'Renew Your Membership',
+                      toastLength: Toast.LENGTH_LONG,
+                      gravity: ToastGravity.SNACKBAR,
+                      timeInSecForIosWeb: 1,
+                      backgroundColor: Color(0xffE74C3C),
+                      textColor: Colors.white,
+                      fontSize: 16.0);
+                }
+              }
+              else
+              {
+                showAlertLogin(context);
+              }
+
+            },
+            hoverElevation: 1.5,
+            shape: StadiumBorder(side: BorderSide(color: Colors.white, width: 0)),
+            //elevation: 1,
+            child: Icon(
+              Customicons.bulb,
+              //color: _foregroundColor,
+            ),
+          ),
+        ),
         //),
         bottomNavigationBar:
             // SizedBox(
@@ -1383,9 +1470,9 @@ class _DashboardWidgetState extends State<Dashboard>
                     new Icon(Customicons.feed),
                     Visibility(
                       child: new Positioned(  // draw a red marble
-                        top: 0.0,
-                        right: 0.0,
-                        child: new Icon(Icons.brightness_1, size: 10.0,
+                        top: -2.0,
+                        right: -4.0,
+                        child: new Icon(Icons.brightness_1, size: 13.0,
                             color: Colors.redAccent),
                       ),
                       visible: FeedNewCnt > (prefs.getInt('FeedCnt'))!,
@@ -1412,165 +1499,6 @@ class _DashboardWidgetState extends State<Dashboard>
         //),
       ),
     );
-  }
-
-  Widget _getFAB() {
-    if (FastNewCnt > (prefs.getInt('FactCnt'))!)
-    {
-      return  FloatingActionButton(
-        backgroundColor: Color(0xffff1c5c),
-        //splashColor: Colors.black,
-        onPressed: () {
-          setState(() {
-            _filtercat.text = '';
-            isSearchCalled = false;
-            focusNode.unfocus();
-          });
-
-          if(NetworkUtil.isLogin)
-          {
-            if (NetworkUtil.isSubScribedUser)
-            {
-              if (prefs.getInt('FactCnt') != null){
-                if (FastNewCnt > prefs.getInt('FactCnt')!)
-                {
-                  prefs.setInt('FactCnt', FastNewCnt);
-                }
-              }
-
-              Navigator.push(
-                context,
-                CupertinoPageRoute(
-                  builder: (BuildContext context) => FastFactsScreen(),
-                ),
-              );
-            }else
-            {
-              try
-              {
-                if (Platform.isAndroid) {
-                  Navigator.push(
-                    context,
-                    CupertinoPageRoute(
-                      builder: (BuildContext context) => WebViewEx(),
-                    ),
-                  );
-                } else if (Platform.isIOS) {
-                  Navigator.push(
-                    context,
-                    CupertinoPageRoute(
-                      builder: (BuildContext context) => IosPayment(),
-                    ),
-                  );
-                }
-              } on PlatformException {
-                print('Failed to get platform version');
-              }
-
-              Fluttertoast.showToast(
-                  msg: NetworkUtil.subscription_end_date == ''
-                      ? 'Start your subscription'
-                      : 'Renew Your Membership',
-                  toastLength: Toast.LENGTH_LONG,
-                  gravity: ToastGravity.SNACKBAR,
-                  timeInSecForIosWeb: 1,
-                  backgroundColor: Color(0xffE74C3C),
-                  textColor: Colors.white,
-                  fontSize: 16.0);
-            }
-          }
-          else
-          {
-            showAlertLogin(context);
-          }
-
-        },
-        hoverElevation: 1.5,
-        shape: StadiumBorder(side: BorderSide(color: Colors.white, width: 2)),
-        elevation: 1.5,
-        child: Icon(
-          Customicons.bulb,
-          //color: _foregroundColor,
-        ),
-      );
-    } else {
-      return  FloatingActionButton(
-        backgroundColor: Color(0xffFF621C),
-        //splashColor: Colors.black,
-        onPressed: () {
-          setState(() {
-            _filtercat.text = '';
-            isSearchCalled = false;
-            focusNode.unfocus();
-          });
-
-          if(NetworkUtil.isLogin)
-          {
-            if (NetworkUtil.isSubScribedUser)
-            {
-              if (prefs.getInt('FactCnt') != null){
-                if (FastNewCnt > prefs.getInt('FactCnt')!)
-                {
-                  prefs.setInt('FactCnt', FastNewCnt);
-                }
-              }
-
-              Navigator.push(
-                context,
-                CupertinoPageRoute(
-                  builder: (BuildContext context) => FastFactsScreen(),
-                ),
-              );
-            }else
-            {
-              try
-              {
-                if (Platform.isAndroid) {
-                  Navigator.push(
-                    context,
-                    CupertinoPageRoute(
-                      builder: (BuildContext context) => WebViewEx(),
-                    ),
-                  );
-                } else if (Platform.isIOS) {
-                  Navigator.push(
-                    context,
-                    CupertinoPageRoute(
-                      builder: (BuildContext context) => IosPayment(),
-                    ),
-                  );
-                }
-              } on PlatformException {
-                print('Failed to get platform version');
-              }
-
-              Fluttertoast.showToast(
-                  msg: NetworkUtil.subscription_end_date == ''
-                      ? 'Start your subscription'
-                      : 'Renew Your Membership',
-                  toastLength: Toast.LENGTH_LONG,
-                  gravity: ToastGravity.SNACKBAR,
-                  timeInSecForIosWeb: 1,
-                  backgroundColor: Color(0xffE74C3C),
-                  textColor: Colors.white,
-                  fontSize: 16.0);
-            }
-          }
-          else
-          {
-            showAlertLogin(context);
-          }
-
-        },
-        hoverElevation: 1.5,
-        shape: StadiumBorder(side: BorderSide(color: Colors.white, width: 2)),
-        elevation: 1.5,
-        child: Icon(
-          Customicons.bulb,
-          //color: _foregroundColor,
-        ),
-      );
-    }
   }
 
   Widget generateColum(categoriesModel item) => Padding(
