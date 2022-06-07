@@ -66,6 +66,8 @@ class _DashboardWidgetState extends State<Dashboard>
   int pageCount = 10;
   int FastNewCnt = 0;
   int FeedNewCnt = 0;
+  int FastPrevCnt = 0;
+  int FeedPrevCnt = 0;
   final itemKey = GlobalKey();
 
   late SharedPreferences prefs;
@@ -172,6 +174,9 @@ class _DashboardWidgetState extends State<Dashboard>
             if (FeedNewCnt > prefs.getInt('FeedCnt')!)
             {
               prefs.setInt('FeedCnt', FeedNewCnt);
+              setState(() {
+                FeedPrevCnt = prefs.getInt('FeedCnt')!;
+              });
             }
           }
 
@@ -315,14 +320,19 @@ class _DashboardWidgetState extends State<Dashboard>
           {
             prefs.setInt('FeedCnt', FeedNewCnt);
           }
-          else{
+          else {
             if (FeedNewCnt > prevCount) {
               //
             }
-            else{
+            else {
               prefs.setInt('FeedCnt', FeedNewCnt);
             }
           }
+
+          setState(() {
+            FeedPrevCnt = prefs.getInt('FeedCnt')!;
+          });
+
         }
         catch(err) {print(err.toString());}
 
@@ -344,6 +354,11 @@ class _DashboardWidgetState extends State<Dashboard>
               prefs.setInt('FactCnt', FastNewCnt);
             }
           }
+
+          setState(() {
+            FastPrevCnt = prefs.getInt('FactCnt')!;
+          });
+
         }
         catch(err) {print(err.toString());}
 
@@ -1366,7 +1381,7 @@ class _DashboardWidgetState extends State<Dashboard>
         floatingActionButton: Badge(
           badgeColor: Colors.red,
           borderRadius: BorderRadius.circular(30),
-          showBadge: FastNewCnt > (prefs.getInt('FactCnt'))!,
+          showBadge: FastNewCnt > FastPrevCnt,
           badgeContent: const Padding(
             padding: EdgeInsets.all(3.0),
             child: Text(
@@ -1388,10 +1403,13 @@ class _DashboardWidgetState extends State<Dashboard>
               {
                 if (NetworkUtil.isSubScribedUser)
                 {
-                  if (prefs!.getInt('FactCnt') != null){
-                    if (FastNewCnt > prefs!.getInt('FactCnt')!)
+                  if (prefs.getInt('FactCnt') != null){
+                    if (FastNewCnt > prefs.getInt('FactCnt')!)
                     {
-                      prefs!.setInt('FactCnt', FastNewCnt);
+                      prefs.setInt('FactCnt', FastNewCnt);
+                      setState(() {
+                        FastPrevCnt = prefs.getInt('FactCnt')!;
+                      });
                     }
                   }
 
@@ -1475,7 +1493,7 @@ class _DashboardWidgetState extends State<Dashboard>
                         child: new Icon(Icons.brightness_1, size: 13.0,
                             color: Colors.redAccent),
                       ),
-                      visible: FeedNewCnt > (prefs.getInt('FeedCnt'))!,
+                      visible: FeedNewCnt > FeedPrevCnt,
                     ),
                   ]
               ),
