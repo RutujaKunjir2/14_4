@@ -1370,7 +1370,7 @@ class _DashboardWidgetState extends State<Dashboard>
           badgeContent: const Padding(
             padding: EdgeInsets.all(3.0),
             child: Text(
-              '',
+              '5',
               style: TextStyle(color: Colors.white),
             ),
           ),
