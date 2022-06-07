@@ -1482,21 +1482,37 @@ class _DashboardWidgetState extends State<Dashboard>
               label: 'Home',
             ),
             BottomNavigationBarItem(
-              label: 'Feed',
               icon: new Stack(
-                  children: <Widget>[
-                    new Icon(Customicons.feed),
-                    Visibility(
-                      child: new Positioned(  // draw a red marble
-                        top: -2.0,
-                        right: -4.0,
-                        child: new Icon(Icons.brightness_1, size: 13.0,
-                            color: Colors.redAccent),
+                children: <Widget>[
+                  new Icon(Customicons.feed),
+                  Visibility(
+                    child: new Positioned(
+                      right: 0,
+                      child: new Container(
+                        padding: EdgeInsets.all(1),
+                        decoration: new BoxDecoration(
+                          color: Colors.red,
+                          borderRadius: BorderRadius.circular(6),
+                        ),
+                        constraints: BoxConstraints(
+                          minWidth: 13,
+                          minHeight: 13,
+                        ),
+                        child: new Text(
+                          '5',
+                          style: new TextStyle(
+                            color: Colors.white,
+                            fontSize: 8,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
                       ),
-                      visible: FeedNewCnt > FeedPrevCnt,
                     ),
-                  ]
+                    visible: FeedNewCnt > FeedPrevCnt,
+                  ),
+                ],
               ),
+              label: 'Feed',
             ),
             BottomNavigationBarItem(
               icon: Icon(Customicons.fav),
