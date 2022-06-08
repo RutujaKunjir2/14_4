@@ -110,6 +110,7 @@ flutter:
     - assets/kid-money.png
     - assets/welcome_home.png
     - assets/new.png
+    - assets/newone.png
 
 
   # To add assets to your application, add an assets section, like this:

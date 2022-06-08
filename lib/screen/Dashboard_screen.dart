@@ -1554,7 +1554,7 @@ class _DashboardWidgetState extends State<Dashboard>
                   Align(
                    alignment: Alignment.topRight,
                     child: Visibility(
-                      child: Image(image: AssetImage('assets/new.png')),
+                      child: Image(image: AssetImage('assets/newone.png')),
                       visible: item.posts_count! > prefs.getInt(''+item.id.toString()+'_'
                         +item.categoryName.toString())!,
                     ),
