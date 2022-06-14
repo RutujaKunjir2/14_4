@@ -310,7 +310,7 @@ class _DashboardWidgetState extends State<Dashboard>
       if (res != null && res["MessageType"] == 1) {
         //NetworkUtil.isSubScribedUser = true;
 
-        print("Feed = "+res["posts_count"].toString());
+       //print("Feed = "+res["posts_count"].toString());
         try
         {
           FeedNewCnt = res["posts_count"];
@@ -336,7 +336,7 @@ class _DashboardWidgetState extends State<Dashboard>
         }
         catch(err) {print(err.toString());}
 
-        print("Fact = "+res["fast_facts_count"].toString());
+       //print("Fact = "+res["fast_facts_count"].toString());
         try
         {
           int? prevCount = prefs.getInt('FactCnt');

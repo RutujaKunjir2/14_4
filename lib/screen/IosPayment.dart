@@ -28,8 +28,8 @@ const bool _kAutoConsume = true;
 // const String yearlyPlan = 'YearlyCFESubscription';
 
 // New In App Submission with new version 1.0.13
-const String halfYearPlan = 'HalfYearlyPlan';
-const String yearlyPlan = 'YearlyPlan';
+const String halfYearPlan = 'HalfYearlyPlanCef';
+const String yearlyPlan = 'YearlyPlanCef';
 
 const List<String> _kProductIds = <String>[
   halfYearPlan,
@@ -160,7 +160,7 @@ class _MyAppState extends State<IosPayment> {
             ),
             _buildProductList(),
             //_buildConsumableBox(),
-            // _buildRestoreButton(),
+             _buildRestoreButton(),
           ],
         ),
       );
@@ -412,7 +412,7 @@ class _MyAppState extends State<IosPayment> {
           TextButton(
             child: const Text('Restore purchases'),
             style: TextButton.styleFrom(
-              backgroundColor: Theme.of(context).primaryColor,
+              backgroundColor: Colors.green[800],
               primary: Colors.white,
             ),
             onPressed: () => _inAppPurchase.restorePurchases(),
