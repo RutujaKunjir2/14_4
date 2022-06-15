@@ -23,6 +23,7 @@ import 'package:flutter/painting.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_email_sender/flutter_email_sender.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:store_redirect/store_redirect.dart';
@@ -140,6 +141,7 @@ class _DashboardWidgetState extends State<Dashboard>
       if(NetworkUtil.isLogin)
       {
         if (NetworkUtil.isSubScribedUser) {
+          _deleteCacheDir();
           Navigator.push(
             context,
             CupertinoPageRoute(
@@ -180,6 +182,7 @@ class _DashboardWidgetState extends State<Dashboard>
             }
           }
 
+          _deleteCacheDir();
           Navigator.push(
             context,
             CupertinoPageRoute(
@@ -212,6 +215,7 @@ class _DashboardWidgetState extends State<Dashboard>
     _sc = ScrollController();
     super.initState();
 
+    _deleteCacheDir();
     getPreferenceData();
 
     focusNode = FocusNode();
@@ -300,6 +304,14 @@ class _DashboardWidgetState extends State<Dashboard>
             context);
       }
     });
+  }
+
+  Future<void> _deleteCacheDir() async {
+    final cacheDir = await getTemporaryDirectory();
+    //print("cache clear");
+    if (cacheDir.existsSync()) {
+      cacheDir.deleteSync(recursive: true);
+    }
   }
 
   Future<categoriesListModel> getcategoriesList() async {
@@ -730,6 +742,7 @@ class _DashboardWidgetState extends State<Dashboard>
                   leading: Icon(Icons.settings),
                   title: Text('Profile Setting', style: TextStyle(fontSize: 18)),
                   onTap: () {
+                    _deleteCacheDir();
                     Navigator.of(context).pop();
                     // Here you can give your route to navigate
                     Navigator.push(
@@ -757,6 +770,7 @@ class _DashboardWidgetState extends State<Dashboard>
                 leading: Icon(Icons.credit_card),
                 title: Text('Payment', style: TextStyle(fontSize: 18)),
                 onTap: () {
+                  _deleteCacheDir();
                   Navigator.of(context).pop();
 
                   if(NetworkUtil.isLogin)
@@ -803,6 +817,7 @@ class _DashboardWidgetState extends State<Dashboard>
                 leading: Icon(Customicons.faqs),
                 title: Text('FAQs', style: TextStyle(fontSize: 18)),
                 onTap: () {
+                  _deleteCacheDir();
                   Navigator.of(context).pop();
                   // Here you can give your route to navigate
                   Navigator.push(
@@ -818,6 +833,7 @@ class _DashboardWidgetState extends State<Dashboard>
                 leading: Icon(Icons.privacy_tip_outlined),
                 title: Text('Privacy Policy', style: TextStyle(fontSize: 18)),
                 onTap: () async {
+                  _deleteCacheDir();
                   Navigator.of(context).pop();
 
                   if (await canLaunch(
@@ -835,6 +851,7 @@ class _DashboardWidgetState extends State<Dashboard>
                 title:
                     Text('Terms & Conditions', style: TextStyle(fontSize: 18)),
                 onTap: () async {
+                  _deleteCacheDir();
                   Navigator.of(context).pop();
 
                   if (await canLaunch(
@@ -851,6 +868,7 @@ class _DashboardWidgetState extends State<Dashboard>
                 leading: Icon(Icons.disc_full),
                 title: Text('Disclaimer', style: TextStyle(fontSize: 18)),
                 onTap: () {
+                  _deleteCacheDir();
                   Navigator.of(context).pop();
                   // Here you can give your route to navigate
                   Navigator.push(
@@ -1059,6 +1077,7 @@ class _DashboardWidgetState extends State<Dashboard>
                                                                       +categoryListView![index].categoryName.toString(), categoryListView![index].posts_count!);
                                                                 }
 
+                                                                _deleteCacheDir();
                                                                 Navigator.push(
                                                                     context,
                                                                     CupertinoPageRoute(
@@ -1413,6 +1432,7 @@ class _DashboardWidgetState extends State<Dashboard>
                     }
                   }
 
+                  _deleteCacheDir();
                   Navigator.push(
                     context,
                     CupertinoPageRoute(
