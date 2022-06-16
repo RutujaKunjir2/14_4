@@ -119,8 +119,8 @@ class _DashboardWidgetState extends State<Dashboard>
 
     if (_selectedIndex == 3)
     {
-      if(NetworkUtil.isLogin)
-      {
+      if (NetworkUtil.isLogin) {
+        _deleteCacheDir();
         Navigator.push(
           context,
           CupertinoPageRoute(
@@ -131,80 +131,75 @@ class _DashboardWidgetState extends State<Dashboard>
           ),
         ).then((value) => setState(() => {_selectedIndex = 0, getUserData()}));
       }
-      else
-      {
-        showAlertLogin(context);
+      else {
+        Fluttertoast.showToast(
+            msg: NetworkUtil.subscription_end_date == ''
+                ? 'Start your subscription'
+                : 'Renew Your Membership',
+            toastLength: Toast.LENGTH_LONG,
+            gravity: ToastGravity.SNACKBAR,
+            timeInSecForIosWeb: 1,
+            backgroundColor: Color(0xffE74C3C),
+            textColor: Colors.white,
+            fontSize: 16.0);
       }
     }
     else if (_selectedIndex == 2)
     {
-      if(NetworkUtil.isLogin)
-      {
-        if (NetworkUtil.isSubScribedUser) {
-          _deleteCacheDir();
-          Navigator.push(
-            context,
-            CupertinoPageRoute(
-              builder: (BuildContext context) => FavoritesList(),
-            ),
-          ).then((value) => setState(() => {_selectedIndex = 0}));
-        } else {
-          Fluttertoast.showToast(
-              msg: NetworkUtil.subscription_end_date == ''
-                  ? 'Start your subscription'
-                  : 'Renew Your Membership',
-              toastLength: Toast.LENGTH_LONG,
-              gravity: ToastGravity.SNACKBAR,
-              timeInSecForIosWeb: 1,
-              backgroundColor: Color(0xffE74C3C),
-              textColor: Colors.white,
-              fontSize: 16.0);
-        }
+      if (NetworkUtil.isSubScribedUser) {
+        _deleteCacheDir();
+        Navigator.push(
+          context,
+          CupertinoPageRoute(
+            builder: (BuildContext context) => FavoritesList(),
+          ),
+        ).then((value) => setState(() => {_selectedIndex = 0}));
       }
-      else
-      {
-        showAlertLogin(context);
+      else {
+        Fluttertoast.showToast(
+            msg: NetworkUtil.subscription_end_date == ''
+                ? 'Start your subscription'
+                : 'Renew Your Membership',
+            toastLength: Toast.LENGTH_LONG,
+            gravity: ToastGravity.SNACKBAR,
+            timeInSecForIosWeb: 1,
+            backgroundColor: Color(0xffE74C3C),
+            textColor: Colors.white,
+            fontSize: 16.0);
       }
 
     } else if (_selectedIndex == 1)
     {
-      if(NetworkUtil.isLogin)
+      if (NetworkUtil.isSubScribedUser)
       {
-        if (NetworkUtil.isSubScribedUser)
-        {
-          if (prefs.getInt('FeedCnt') != null){
-            if (FeedNewCnt > prefs.getInt('FeedCnt')!)
-            {
-              prefs.setInt('FeedCnt', FeedNewCnt);
-              setState(() {
-                FeedPrevCnt = prefs.getInt('FeedCnt')!;
-              });
-            }
+        if (prefs.getInt('FeedCnt') != null){
+          if (FeedNewCnt > prefs.getInt('FeedCnt')!)
+          {
+            prefs.setInt('FeedCnt', FeedNewCnt);
+            setState(() {
+              FeedPrevCnt = prefs.getInt('FeedCnt')!;
+            });
           }
-
-          _deleteCacheDir();
-          Navigator.push(
-            context,
-            CupertinoPageRoute(
-              builder: (BuildContext context) => FeedScreen(),
-            ),
-          ).then((value) => setState(() => {_selectedIndex = 0}));
-        } else {
-          Fluttertoast.showToast(
-              msg: NetworkUtil.subscription_end_date == ''
-                  ? 'Start your subscription'
-                  : 'Renew Your Membership',
-              toastLength: Toast.LENGTH_LONG,
-              gravity: ToastGravity.SNACKBAR,
-              timeInSecForIosWeb: 1,
-              backgroundColor: Color(0xffE74C3C),
-              textColor: Colors.white,
-              fontSize: 16.0);
         }
-      }
-      else
-      {
-        showAlertLogin(context);
+
+        _deleteCacheDir();
+        Navigator.push(
+          context,
+          CupertinoPageRoute(
+            builder: (BuildContext context) => FeedScreen(),
+          ),
+        ).then((value) => setState(() => {_selectedIndex = 0}));
+      } else {
+        Fluttertoast.showToast(
+            msg: NetworkUtil.subscription_end_date == ''
+                ? 'Start your subscription'
+                : 'Renew Your Membership',
+            toastLength: Toast.LENGTH_LONG,
+            gravity: ToastGravity.SNACKBAR,
+            timeInSecForIosWeb: 1,
+            backgroundColor: Color(0xffE74C3C),
+            textColor: Colors.white,
+            fontSize: 16.0);
       }
     } else if (_selectedIndex == 0) {}
   }
@@ -773,42 +768,35 @@ class _DashboardWidgetState extends State<Dashboard>
                   _deleteCacheDir();
                   Navigator.of(context).pop();
 
-                  if(NetworkUtil.isLogin)
-                  {
-                    if (NetworkUtil.isSubScribedUser) {
-                      Navigator.push(
-                        context,
-                        CupertinoPageRoute(
-                          builder: (BuildContext context) => PaymentSelection(),
-                        ),
-                      );
-                    } else {
-                      try
-                      {
-                        if (Platform.isAndroid) {
-                          Navigator.push(
-                            context,
-                            CupertinoPageRoute(
-                              builder: (BuildContext context) => WebViewEx(),
-                            ),
-                          );
-                        } else if (Platform.isIOS) {
-                          Navigator.push(
-                            context,
-                            CupertinoPageRoute(
-                              builder: (BuildContext context) => IosPayment(),
-                            ),
-                          );
-                        }
-                      } on PlatformException {
-                        print('Failed to get platform version');
+                  if (NetworkUtil.isSubScribedUser) {
+                    Navigator.push(
+                      context,
+                      CupertinoPageRoute(
+                        builder: (BuildContext context) => PaymentSelection(),
+                      ),
+                    );
+                  } else {
+                    try
+                    {
+                      if (Platform.isAndroid) {
+                        Navigator.push(
+                          context,
+                          CupertinoPageRoute(
+                            builder: (BuildContext context) => WebViewEx(),
+                          ),
+                        );
                       }
-
+                      else if (Platform.isIOS) {
+                        Navigator.push(
+                          context,
+                          CupertinoPageRoute(
+                            builder: (BuildContext context) => IosPayment(),
+                          ),
+                        );
+                      }
+                    } on PlatformException {
+                      print('Failed to get platform version');
                     }
-                  }
-                  else
-                  {
-                    showAlertLogin(context);
                   }
                 },
               ),
@@ -818,14 +806,57 @@ class _DashboardWidgetState extends State<Dashboard>
                 title: Text('FAQs', style: TextStyle(fontSize: 18)),
                 onTap: () {
                   _deleteCacheDir();
-                  Navigator.of(context).pop();
                   // Here you can give your route to navigate
-                  Navigator.push(
-                    context,
-                    CupertinoPageRoute(
-                      builder: (BuildContext context) => FaqsScreen(),
-                    ),
-                  );
+                  if (NetworkUtil.isSubScribedUser) {
+                    Navigator.of(context).pop();
+                    Navigator.push(
+                      context,
+                      CupertinoPageRoute(
+                        builder: (BuildContext context) => FaqsScreen(),
+                      ),
+                    );
+                  }
+                  else {
+                    try
+                    {
+                      if (Platform.isAndroid) {
+                        Navigator.of(context).pop();
+                        Navigator.push(
+                          context,
+                          CupertinoPageRoute(
+                            builder: (BuildContext context) => FaqsScreen(),
+                          ),
+                        );
+                      }
+                      else if (Platform.isIOS)
+                      {
+                        if (NetworkUtil.isLogin){
+                          Navigator.of(context).pop();
+                          Navigator.push(
+                            context,
+                            CupertinoPageRoute(
+                              builder: (BuildContext context) => FaqsScreen(),
+                            ),
+                          );
+                        }
+                        else{
+                          Fluttertoast.showToast(
+                              msg: NetworkUtil.subscription_end_date == ''
+                                  ? 'Start your subscription'
+                                  : 'Renew Your Membership',
+                              toastLength: Toast.LENGTH_LONG,
+                              gravity: ToastGravity.SNACKBAR,
+                              timeInSecForIosWeb: 1,
+                              backgroundColor: Color(0xffE74C3C),
+                              textColor: Colors.white,
+                              fontSize: 16.0);
+                        }
+
+                      }
+                    } on PlatformException {
+                      print('Failed to get platform version');
+                    }
+                  }
                 },
               ),
               Divider(height: 3.0),
@@ -913,7 +944,7 @@ class _DashboardWidgetState extends State<Dashboard>
                     // Here you can give your route to navigate
                     NetworkUtil.isLogin = false;
                     NetworkUtil.isSocialLogin = false;
-                    NetworkUtil.isSubScribedUser = true;
+                    NetworkUtil.isSubScribedUser = false;
                     NetworkUtil.isAdult = false;
                     NetworkUtil.subscription_end_date = '';
                     NetworkUtil.UserName = '';
@@ -946,7 +977,7 @@ class _DashboardWidgetState extends State<Dashboard>
                     }
                   },
                 ),
-                visible: NetworkUtil.isLogin,
+                visible: Platform.isAndroid,
               ),
             ],
           ),
@@ -1064,55 +1095,48 @@ class _DashboardWidgetState extends State<Dashboard>
                                                           setState(() {
                                                             // ontap of each card, set the defined int to the grid view index
 
-                                                            if(NetworkUtil.isLogin)
+                                                            if (NetworkUtil
+                                                                .isSubScribedUser)
                                                             {
-                                                              if (NetworkUtil
-                                                                  .isSubScribedUser)
+
+                                                              if (categoryListView![index].posts_count! > prefs.getInt(''+categoryListView![index].id.toString()+'_'
+                                                                  +categoryListView![index].categoryName.toString())!)
                                                               {
+                                                                prefs.setInt(''+categoryListView![index].id.toString()+'_'
+                                                                    +categoryListView![index].categoryName.toString(), categoryListView![index].posts_count!);
+                                                              }
 
-                                                                if (categoryListView![index].posts_count! > prefs.getInt(''+categoryListView![index].id.toString()+'_'
-                                                                    +categoryListView![index].categoryName.toString())!)
-                                                                {
-                                                                  prefs.setInt(''+categoryListView![index].id.toString()+'_'
-                                                                      +categoryListView![index].categoryName.toString(), categoryListView![index].posts_count!);
-                                                                }
-
-                                                                _deleteCacheDir();
-                                                                Navigator.push(
+                                                              _deleteCacheDir();
+                                                              Navigator.push(
+                                                                  context,
+                                                                  CupertinoPageRoute(
+                                                                      builder: (context) =>
+                                                                          categoryContent(
+                                                                            categoriesModel_:
+                                                                            categoryListView![index],
+                                                                          )));
+                                                            }
+                                                            else {
+                                                              try
+                                                              {
+                                                                if (Platform.isAndroid) {
+                                                                  Navigator.push(
                                                                     context,
                                                                     CupertinoPageRoute(
-                                                                        builder: (context) =>
-                                                                            categoryContent(
-                                                                              categoriesModel_:
-                                                                              categoryListView![index],
-                                                                            )));
-                                                              } else {
-                                                                try
-                                                                {
-                                                                  if (Platform.isAndroid) {
-                                                                    Navigator.push(
-                                                                      context,
-                                                                      CupertinoPageRoute(
-                                                                        builder: (BuildContext context) => WebViewEx(),
-                                                                      ),
-                                                                    );
-                                                                  } else if (Platform.isIOS) {
-                                                                    Navigator.push(
-                                                                      context,
-                                                                      CupertinoPageRoute(
-                                                                        builder: (BuildContext context) => IosPayment(),
-                                                                      ),
-                                                                    );
-                                                                  }
-                                                                } on PlatformException {
-                                                                  print('Failed to get platform version');
+                                                                      builder: (BuildContext context) => WebViewEx(),
+                                                                    ),
+                                                                  );
+                                                                } else if (Platform.isIOS) {
+                                                                  Navigator.push(
+                                                                    context,
+                                                                    CupertinoPageRoute(
+                                                                      builder: (BuildContext context) => IosPayment(),
+                                                                    ),
+                                                                  );
                                                                 }
-
+                                                              } on PlatformException {
+                                                                print('Failed to get platform version');
                                                               }
-                                                            }
-                                                            else
-                                                            {
-                                                              showAlertLogin(context);
                                                             }
 
                                                           });
@@ -1418,65 +1442,60 @@ class _DashboardWidgetState extends State<Dashboard>
                 focusNode.unfocus();
               });
 
-              if(NetworkUtil.isLogin)
+              if (NetworkUtil.isSubScribedUser)
               {
-                if (NetworkUtil.isSubScribedUser)
-                {
-                  if (prefs.getInt('FactCnt') != null){
-                    if (FastNewCnt > prefs.getInt('FactCnt')!)
-                    {
-                      prefs.setInt('FactCnt', FastNewCnt);
-                      setState(() {
-                        FastPrevCnt = prefs.getInt('FactCnt')!;
-                      });
-                    }
-                  }
-
-                  _deleteCacheDir();
-                  Navigator.push(
-                    context,
-                    CupertinoPageRoute(
-                      builder: (BuildContext context) => FastFactsScreen(),
-                    ),
-                  );
-                }else
-                {
-                  try
+                if (prefs.getInt('FactCnt') != null){
+                  if (FastNewCnt > prefs.getInt('FactCnt')!)
                   {
-                    if (Platform.isAndroid) {
-                      Navigator.push(
-                        context,
-                        CupertinoPageRoute(
-                          builder: (BuildContext context) => WebViewEx(),
-                        ),
-                      );
-                    } else if (Platform.isIOS) {
-                      Navigator.push(
-                        context,
-                        CupertinoPageRoute(
-                          builder: (BuildContext context) => IosPayment(),
-                        ),
-                      );
-                    }
-                  } on PlatformException {
-                    print('Failed to get platform version');
+                    prefs.setInt('FactCnt', FastNewCnt);
+                    setState(() {
+                      FastPrevCnt = prefs.getInt('FactCnt')!;
+                    });
                   }
-
-                  Fluttertoast.showToast(
-                      msg: NetworkUtil.subscription_end_date == ''
-                          ? 'Start your subscription'
-                          : 'Renew Your Membership',
-                      toastLength: Toast.LENGTH_LONG,
-                      gravity: ToastGravity.SNACKBAR,
-                      timeInSecForIosWeb: 1,
-                      backgroundColor: Color(0xffE74C3C),
-                      textColor: Colors.white,
-                      fontSize: 16.0);
                 }
+
+                _deleteCacheDir();
+                Navigator.push(
+                  context,
+                  CupertinoPageRoute(
+                    builder: (BuildContext context) => FastFactsScreen(),
+                  ),
+                );
               }
               else
               {
-                showAlertLogin(context);
+                try
+                {
+                  if (Platform.isAndroid) {
+                    Navigator.push(
+                      context,
+                      CupertinoPageRoute(
+                        builder: (BuildContext context) => WebViewEx(),
+                      ),
+                    );
+                  }
+                  else if (Platform.isIOS) {
+                    Navigator.push(
+                      context,
+                      CupertinoPageRoute(
+                        builder: (BuildContext context) => IosPayment(),
+                      ),
+                    );
+                  }
+                } on PlatformException {
+                  print('Failed to get platform version');
+                }
+
+                Fluttertoast.showToast(
+                    msg: NetworkUtil.subscription_end_date == ''
+                        ? 'Start your subscription'
+                        : 'Renew Your Membership',
+                    toastLength: Toast.LENGTH_LONG,
+                    gravity: ToastGravity.SNACKBAR,
+                    timeInSecForIosWeb: 1,
+                    backgroundColor: Color(0xffE74C3C),
+                    textColor: Colors.white,
+                    fontSize: 16.0);
               }
 
             },
@@ -1663,43 +1682,6 @@ class _DashboardWidgetState extends State<Dashboard>
         sharePositionOrigin: box.globalToLocal(Offset.zero) & box.size);
   }
 
-  showAlertLogin(BuildContext context) {
-    Widget continueButton = TextButton(
-      child: Text("OK"),
-      onPressed: () {
-        Navigator.pushReplacement(
-                    context,
-                    CupertinoPageRoute(
-                        builder: (context) => const WelcomeScreen()));
-      },
-    );
-
-    Widget cancelButton = TextButton(
-        child: Text("Cancel"),
-        onPressed: () {
-          Navigator.of(context).pop();
-        },
-    );
-
-    // set up the AlertDialog
-    AlertDialog alert = AlertDialog(
-      title: Text("Alert"),
-      content: Text("Please sign in to the application to access the features."),
-      actions: [
-        continueButton,
-        cancelButton,
-      ],
-    );
-
-    // show the dialog
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return alert;
-      },
-    );
-  }
-
   showAlertDialog(BuildContext context) {
     // set up the buttons
     Widget cancelButton = TextButton(
@@ -1740,7 +1722,7 @@ class _DashboardWidgetState extends State<Dashboard>
 
   Future<detailListModel> getAppSearchList(int pageindex) async
   {
-    if(NetworkUtil.isLogin)
+    if (NetworkUtil.isSubScribedUser)
     {
       //print("pageindex : " + pageindex.toString());
       if (!isLoadingLazy && pageindex > 0) {
@@ -1812,9 +1794,19 @@ class _DashboardWidgetState extends State<Dashboard>
     }
     else
     {
-      showAlertLogin(context);
+      Fluttertoast.showToast(
+          msg: NetworkUtil.subscription_end_date == ''
+              ? 'Start your subscription'
+              : 'Renew Your Membership',
+          toastLength: Toast.LENGTH_LONG,
+          gravity: ToastGravity.SNACKBAR,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Color(0xffE74C3C),
+          textColor: Colors.white,
+          fontSize: 16.0);
       return detailListModel.fromJson([]);
     }
+
   }
 
   void getDetailList(List<dynamic> parsedJson) {

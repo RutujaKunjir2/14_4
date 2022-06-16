@@ -52,7 +52,7 @@ class NetworkUtil {
   static bool isAdult = false;
   static bool isLogin = false;
   static bool isSocialLogin = false;
-  static bool isSubScribedUser = true;
+  static bool isSubScribedUser = false;
   static String subscription_end_date = '';
 
   final JsonDecoder _decoder = new JsonDecoder();

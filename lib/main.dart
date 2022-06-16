@@ -335,7 +335,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
     NetworkUtil.isLogin = false;
     NetworkUtil.isSocialLogin = false;
-    NetworkUtil.isSubScribedUser = true;
+    NetworkUtil.isSubScribedUser = false;
     NetworkUtil.isAdult = false;
     NetworkUtil.subscription_end_date = '';
 
