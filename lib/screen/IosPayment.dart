@@ -235,7 +235,7 @@ class _MyAppState extends State<IosPayment> {
                     ),
                   )
               ),
-              visible: false,
+              visible: true,
             )
           ],
         ),
