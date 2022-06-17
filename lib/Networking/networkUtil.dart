@@ -16,6 +16,7 @@ class NetworkUtil {
   static String baseUrl = "https://www.childrenforenvironment.com/";
   static String verifyReceipt = "api/subscription/app-store/verify-receipt";
   static String getToken = "api/user/get-token";
+  static String refreshToken = "api/refresh-ios-tokens";
   static String registerUser = "api/user/register";
   static String createUserProfile = "api/saveprofile";
   static String getCategories = "api/categories";
@@ -44,6 +45,7 @@ class NetworkUtil {
   static String subscribethankyou = "/subscribe-thankyou";
 
   static String token = '';
+  static String secret = '';
   static String deviceId = "";
   static String deviceVersion = '';
   static String AppVersion = "1.0.0";

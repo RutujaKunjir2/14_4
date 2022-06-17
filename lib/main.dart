@@ -192,10 +192,19 @@ class _MyHomePageState extends State<MyHomePage> {
 
       if(NetworkUtil.isSocialLogin){
         //socialLogin();
-      }else{
-        login(email,password);
       }
+      else
+      {
+        if (Platform.isAndroid)
+        {
+          login(email,password);
+        }
+        else if (Platform.isIOS)
+        {
+          refreshToken();
+        }
 
+      }
 
     }else{
       Timer(
@@ -207,6 +216,94 @@ class _MyHomePageState extends State<MyHomePage> {
 
     }
 
+  }
+
+  void refreshToken() {
+
+    var body = {
+      "device_id": ""+NetworkUtil.deviceId,
+      "secret": ""+NetworkUtil.secret,
+    };
+
+    print("refresh body : " + body.toString());
+
+    _netUtil.post(NetworkUtil.refreshToken,body,true).then((dynamic res) {
+
+      print("refresh res : " +res.toString());
+
+      if(res != null && res["MessageType"] == 1)
+      {
+
+        NetworkUtil.token = res["tokens"]["refresh_token"];
+        NetworkUtil.isLogin = true;
+
+
+        if(res["SubscriptionEndDate"] != null){
+          NetworkUtil.subscription_end_date = res["SubscriptionEndDate"];
+        }
+
+        if(res["subscribed"] == 0){
+          NetworkUtil.isSubScribedUser = false;
+        }else{
+          NetworkUtil.isSubScribedUser = true;
+        }
+
+        prefs.setString('token', res["tokens"]["refresh_token"]);
+        prefs.setBool('isLogin', true);
+
+
+        Navigator.pushReplacement(context,
+            MaterialPageRoute(builder: (context) => const Dashboard()));
+
+        //return res["token"];
+
+      }
+      else if(res != null && res["MessageType"] == -1){
+
+        showAlertDialog(context,res["Message"]);
+
+      }else if(res != null && res["MessageType"] == 0){
+
+        Fluttertoast.showToast(
+            msg: res["Message"],
+            toastLength: Toast.LENGTH_LONG,
+            gravity: ToastGravity.SNACKBAR,
+            timeInSecForIosWeb: 1,
+            backgroundColor: Color(0xffDA4542),
+            textColor: Colors.white,
+            fontSize: 16.0
+        );
+
+      }else{
+
+        Fluttertoast.showToast(
+            msg: 'Something went wrong.',
+            toastLength: Toast.LENGTH_LONG,
+            gravity: ToastGravity.SNACKBAR,
+            timeInSecForIosWeb: 1,
+            backgroundColor: Color(0xffDA4542),
+            textColor: Colors.white,
+            fontSize: 16.0
+        );
+        // final snack = SnackBar(behavior: SnackBarBehavior.floating,content: Text(res["Message"]),duration: Duration(seconds: 2),);
+        // ScaffoldMessenger.of(context).showSnackBar(snack);
+
+        //return res["Message"];
+      }
+
+
+    }).catchError((e) {
+      print(e);
+      Fluttertoast.showToast(
+          msg: 'Something went wrong.',
+          toastLength: Toast.LENGTH_LONG,
+          gravity: ToastGravity.SNACKBAR,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Color(0xffE74C3C),
+          textColor: Colors.white,
+          fontSize: 16.0
+      );
+    });
   }
 
   void login(String username, String password) {

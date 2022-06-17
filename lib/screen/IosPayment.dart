@@ -14,6 +14,7 @@ import 'Dashboard_screen.dart';
 import 'dart:convert';
 import 'consumable_store.dart';
 import 'PaymentHistory.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -53,9 +54,13 @@ class _MyAppState extends State<IosPayment> {
   bool _loading = true;
   String? _queryProductError;
   NetworkUtil _netUtil = new NetworkUtil();
+  late SharedPreferences prefs;
 
   @override
-  void initState() {
+  void initState()
+  {
+    getPreferenceData();
+
     final Stream<List<PurchaseDetails>> purchaseUpdated =
         _inAppPurchase.purchaseStream;
     _subscription = purchaseUpdated.listen((purchaseDetailsList) {
@@ -68,6 +73,11 @@ class _MyAppState extends State<IosPayment> {
     initStoreInfo();
     super.initState();
   }
+
+  getPreferenceData() async {
+    prefs = await SharedPreferences.getInstance();
+  }
+
 
   Future<void> initStoreInfo() async {
     final bool isAvailable = await _inAppPurchase.isAvailable();
@@ -586,15 +596,37 @@ class _MyAppState extends State<IosPayment> {
         "receipt_data" : purchaseDetails.verificationData.serverVerificationData,
         "is_renewable" : "1",
         "amount" : ""+amountSub,
+        "device_id" : ""+NetworkUtil.deviceId,
       };
 
-     // print("receipt_data : " + body.toString());
+     //print("receipt_data : " + body.toString());
 
-      _netUtil.post(NetworkUtil.verifyReceipt,body,true).then((dynamic res)
+      _netUtil.post(NetworkUtil.verifyReceipt,body,false).then((dynamic res)
       {
-      //  print("VerifyReceipt : " + res.toString());
+        //print("VerifyReceipt : " + res.toString());
 
-        if ((res != null && res["MessageType"] == 1)) {
+        if ((res != null && res["MessageType"] == 1))
+        {
+          NetworkUtil.token = res["token"];
+          NetworkUtil.secret = res["secret"];
+          NetworkUtil.isLogin = true;
+          NetworkUtil.isSocialLogin = false;
+
+          if (res["SubscriptionEndDate"] != null) {
+            NetworkUtil.subscription_end_date = res["SubscriptionEndDate"];
+          }
+
+          if (res["subscribed"] == 0) {
+            NetworkUtil.isSubScribedUser = false;
+          } else {
+            NetworkUtil.isSubScribedUser = true;
+          }
+
+          prefs.setString('token', res["token"]);
+          prefs.setString('secret', res["secret"]);
+          prefs.setBool('isSocialLogin', false);
+          prefs.setBool('isLogin', true);
+
           Fluttertoast.showToast(
               msg: 'Successfully Subscribed.',
               toastLength: Toast.LENGTH_LONG,
