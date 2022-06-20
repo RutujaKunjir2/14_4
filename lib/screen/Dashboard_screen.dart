@@ -468,56 +468,62 @@ class _DashboardWidgetState extends State<Dashboard>
      //print("user : " + res.toString());
      // print("userToken : " + NetworkUtil.token);
 
-      if (res != null && res["MessageType"] == 1) {
-        if (jsonData['profile'] != null) {
-          prefs.setString("UserId", jsonData['id'].toString());
-          prefs.setString('email', jsonData['email']);
+      if (res != null && res["MessageType"] == 1)
+      {
+        try{
+          if (jsonData['profile'] != null) {
+            prefs.setString("UserId", jsonData['id'].toString());
+            prefs.setString('email', jsonData['email']);
 
-          setState(() {
-            if (res["subscription_end_date"] != null) {
-              NetworkUtil.subscription_end_date = res["subscription_end_date"];
-            }
+            setState(() {
+              if (res["subscription_end_date"] != null) {
+                NetworkUtil.subscription_end_date = res["subscription_end_date"];
+              }
 
-            if (res["subscribed"] == 0) {
-              NetworkUtil.isSubScribedUser = false;
-            } else {
-              NetworkUtil.isSubScribedUser = true;
-            }
+              if (res["subscribed"] == 0) {
+                NetworkUtil.isSubScribedUser = false;
+              } else {
+                NetworkUtil.isSubScribedUser = true;
+              }
 
-            if (jsonData['name'] != null) {
-              NetworkUtil.UserName = jsonData['name'];
-            }
+              if (jsonData['name'] != null) {
+                NetworkUtil.UserName = jsonData['name'];
+              }
 
-            if (jsonData['email'] != null) {
-              NetworkUtil.email = jsonData['email'];
-            }
-          });
-        } else {
-          Fluttertoast.showToast(
-              msg: "Please update profile first.",
-              toastLength: Toast.LENGTH_LONG,
-              gravity: ToastGravity.SNACKBAR,
-              timeInSecForIosWeb: 1,
-              backgroundColor: Color(0xff69F0AE),
-              textColor: Color(0xff19442C),
-              fontSize: 16.0);
+              if (jsonData['email'] != null) {
+                NetworkUtil.email = jsonData['email'];
+              }
+            });
+          } else {
+            Fluttertoast.showToast(
+                msg: "Please update profile first.",
+                toastLength: Toast.LENGTH_LONG,
+                gravity: ToastGravity.SNACKBAR,
+                timeInSecForIosWeb: 1,
+                backgroundColor: Color(0xff69F0AE),
+                textColor: Color(0xff19442C),
+                fontSize: 16.0);
 
-          Navigator.push(
-            context,
-            CupertinoPageRoute(
-              builder: (BuildContext context) => BuildProfile(
-                  isEdit: false,
-                  isFromHome: true,
-                  parents_name: NetworkUtil.UserName),
-            ),
-          ).then((value) => {
-                if (this.mounted)
-                  {
-                    setState(() {
-                      getUserData();
-                    })
-                  }
-              });
+            Navigator.push(
+              context,
+              CupertinoPageRoute(
+                builder: (BuildContext context) => BuildProfile(
+                    isEdit: false,
+                    isFromHome: true,
+                    parents_name: NetworkUtil.UserName),
+              ),
+            ).then((value) => {
+              if (this.mounted)
+                {
+                  setState(() {
+                    getUserData();
+                  })
+                }
+            });
+          }
+        }
+        catch(err){
+          print(err.toString());
         }
 
         //print("user NetworkUtil: " + NetworkUtil.UserName + NetworkUtil.email);

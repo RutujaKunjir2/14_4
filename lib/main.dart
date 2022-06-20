@@ -132,22 +132,27 @@ class _MyHomePageState extends State<MyHomePage> {
       NetworkUtil.isLogin = isLogin;
 
       if(isLogin && isSocialLogin != null && !isSocialLogin){
-        email = prefs.getString('email')!;
-        password = await secureStorage.readSecureData('password');
-        //password = prefs.getString('password')!;
-        //password = prefs.getString('password')!;
+        try{
+          email = prefs.getString('email')!;
+          password = await secureStorage.readSecureData('password');
+          //password = prefs.getString('password')!;
+          //password = prefs.getString('password')!;
 
-        if(prefs.getString('UserName') != null){
-          Username = prefs.getString('UserName')!;
+          if(prefs.getString('UserName') != null){
+            Username = prefs.getString('UserName')!;
+          }
+
+          NetworkUtil.email = email;
+          NetworkUtil.UserName = Username;
+
+          bool? isAdult = await prefs.getBool('isAdult');
+
+          if(isAdult != null){
+            NetworkUtil.isAdult = isAdult;
+          }
         }
-
-        NetworkUtil.email = email;
-        NetworkUtil.UserName = Username;
-
-        bool? isAdult = await prefs.getBool('isAdult');
-
-        if(isAdult != null){
-          NetworkUtil.isAdult = isAdult;
+        catch(err){
+          print(err.toString());
         }
       }
 
@@ -222,14 +227,14 @@ class _MyHomePageState extends State<MyHomePage> {
 
     var body = {
       "device_id": ""+NetworkUtil.deviceId,
-      "secret": ""+NetworkUtil.secret,
+      "secret": ""+prefs.getString('secret')!,
     };
 
-    print("refresh body : " + body.toString());
+     //print("refresh body : " + body.toString());
 
     _netUtil.post(NetworkUtil.refreshToken,body,true).then((dynamic res) {
 
-      print("refresh res : " +res.toString());
+      //print("refresh res : " +res.toString());
 
       if(res != null && res["MessageType"] == 1)
       {

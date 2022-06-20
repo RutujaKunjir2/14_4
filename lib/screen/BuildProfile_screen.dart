@@ -295,7 +295,7 @@ class _BuildProfileState extends State<BuildProfile> {
                   ),
                 )
             ),
-            visible: Platform.isIOS,
+            visible: false,
           ),
         ],
       ),
