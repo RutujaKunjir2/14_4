@@ -302,11 +302,14 @@ class _DashboardWidgetState extends State<Dashboard>
   }
 
   Future<void> _deleteCacheDir() async {
-    final cacheDir = await getTemporaryDirectory();
-    //print("cache clear");
-    if (cacheDir.existsSync()) {
-      cacheDir.deleteSync(recursive: true);
+    try{
+      final cacheDir = await getTemporaryDirectory();
+      //print("cache clear");
+      if (cacheDir.existsSync()) {
+        cacheDir.deleteSync(recursive: true);
+      }
     }
+    catch(err) {print(err.toString());}
   }
 
   Future<categoriesListModel> getcategoriesList() async {

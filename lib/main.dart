@@ -239,7 +239,7 @@ class _MyHomePageState extends State<MyHomePage> {
       if(res != null && res["MessageType"] == 1)
       {
 
-        NetworkUtil.token = res["tokens"]["refresh_token"];
+        NetworkUtil.token = res["tokens"]["access_token"];
         NetworkUtil.isLogin = true;
 
 
@@ -253,7 +253,7 @@ class _MyHomePageState extends State<MyHomePage> {
           NetworkUtil.isSubScribedUser = true;
         }
 
-        prefs.setString('token', res["tokens"]["refresh_token"]);
+        prefs.setString('token', res["tokens"]["access_token"]);
         prefs.setBool('isLogin', true);
 
 

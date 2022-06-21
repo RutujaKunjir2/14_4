@@ -460,96 +460,105 @@ class PaymentSelectionState extends State<PaymentSelection> {
     }
   }
 
-  void getUserData() async {
+  void getUserData() async
+  {
+    try
+    {
+      setState(() {
+        _submit = true;
+      });
 
-    setState(() {
-      _submit = true;
-    });
+      return _netUtil.get(NetworkUtil.getUserDetail, true).then((dynamic res) {
 
-    return _netUtil.get(NetworkUtil.getUserDetail, true).then((dynamic res) {
+        var user = json.encode(res['user']);
 
-      var user = json.encode(res['user']);
+        Map<String, dynamic> jsonData = json.decode(user) as Map<String, dynamic>;
 
-      Map<String, dynamic> jsonData = json.decode(user) as Map<String, dynamic>;
+        print("user : " + res.toString());
 
-      print("user : " + res.toString());
+        //playStoreVersion = double.parse(res['Appversion'].toString());
 
-      //playStoreVersion = double.parse(res['Appversion'].toString());
-
-      if (res != null && res["MessageType"] == 1) {
-        prefs.setString("UserId", jsonData['id'].toString());
-        prefs.setString('email', jsonData['email']);
-
-        setState(() {
-          _submit = false;
-          if (res["subscription_end_date"] != null) {
-            NetworkUtil.subscription_end_date = res["subscription_end_date"];
-          }
-
-          if(NetworkUtil.subscription_end_date != null && NetworkUtil.subscription_end_date.length > 0){
-
-            var inputFormat = DateFormat('yyyy-MM-dd');
-            var inputDate = inputFormat.parse(NetworkUtil.subscription_end_date); // <-- dd/MM 24H format
-
-            var outputFormat = DateFormat('dd MMM yyyy');
-            endDate = outputFormat.format(inputDate);
-
-          }else{
-            endDate = '';
-          }
-
-          try
-          {
-            if (Platform.isAndroid)
-            {
-              if(res["razor_plan"] != null)
-              {
-                subPlan = res["razor_plan"];
-                subPlan = subPlan.replaceAll(RegExp('_'), ' ');
-              }
-              else{
-                subPlan = '';
-              }
-            }
-            else if (Platform.isIOS)
-            {
-              if(res["app_store_plan"] != null)
-              {
-                subPlan = res["app_store_plan"];
-              }
-              else{
-                subPlan = '';
-              }
-            }
-          } on PlatformException {
-            print('Failed to get platform version');
-          }
-
-          if (res["subscribed"] == 0) {
-            NetworkUtil.isSubScribedUser = false;
-          } else {
-            NetworkUtil.isSubScribedUser = true;
-          }
-
-          if (jsonData['name'] != null) {
-            NetworkUtil.UserName = jsonData['name'];
-          }
+        if (res != null && res["MessageType"] == 1)
+        {
+          prefs.setString("UserId", jsonData['id'].toString());
 
           if (jsonData['email'] != null) {
-            NetworkUtil.email = jsonData['email'];
+            prefs.setString('email', jsonData['email']);
           }
-        });
 
-        //print("user NetworkUtil: " + NetworkUtil.UserName + NetworkUtil.email);
-      }else{
 
-        setState(() {
-          _submit = false;
-        });
+          setState(() {
+            _submit = false;
+            if (res["subscription_end_date"] != null) {
+              NetworkUtil.subscription_end_date = res["subscription_end_date"];
+            }
 
-      }
+            if(NetworkUtil.subscription_end_date != null && NetworkUtil.subscription_end_date.length > 0){
 
-    });
+              var inputFormat = DateFormat('yyyy-MM-dd');
+              var inputDate = inputFormat.parse(NetworkUtil.subscription_end_date); // <-- dd/MM 24H format
+
+              var outputFormat = DateFormat('dd MMM yyyy');
+              endDate = outputFormat.format(inputDate);
+
+            }else{
+              endDate = '';
+            }
+
+            try
+            {
+              if (Platform.isAndroid)
+              {
+                if(res["razor_plan"] != null)
+                {
+                  subPlan = res["razor_plan"];
+                  subPlan = subPlan.replaceAll(RegExp('_'), ' ');
+                }
+                else{
+                  subPlan = '';
+                }
+              }
+              else if (Platform.isIOS)
+              {
+                if(res["app_store_plan"] != null)
+                {
+                  subPlan = res["app_store_plan"];
+                }
+                else{
+                  subPlan = '';
+                }
+              }
+            } on PlatformException {
+              print('Failed to get platform version');
+            }
+
+            if (res["subscribed"] == 0) {
+              NetworkUtil.isSubScribedUser = false;
+            } else {
+              NetworkUtil.isSubScribedUser = true;
+            }
+
+            if (jsonData['name'] != null) {
+              NetworkUtil.UserName = jsonData['name'];
+            }
+
+            if (jsonData['email'] != null) {
+              NetworkUtil.email = jsonData['email'];
+            }
+          });
+
+          //print("user NetworkUtil: " + NetworkUtil.UserName + NetworkUtil.email);
+        }else{
+
+          setState(() {
+            _submit = false;
+          });
+
+        }
+
+      });
+    }
+    catch(err) {print(err.toString());}
   }
 
 }
