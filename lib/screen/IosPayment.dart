@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:in_app_purchase_android/billing_client_wrappers.dart';
 import 'package:in_app_purchase_android/in_app_purchase_android.dart';
@@ -170,7 +171,7 @@ class _MyAppState extends State<IosPayment> {
             ),
             _buildProductList(),
             //_buildConsumableBox(),
-             _buildRestoreButton(),
+            _buildRestoreButton(),
           ],
         ),
       );
@@ -426,7 +427,7 @@ class _MyAppState extends State<IosPayment> {
           TextButton(
             child: const Text('Restore purchases'),
             style: TextButton.styleFrom(
-              backgroundColor: Colors.green[800],
+              backgroundColor: Colors.green[400],
               primary: Colors.white,
             ),
             onPressed: () => _inAppPurchase.restorePurchases(),
@@ -599,6 +600,9 @@ class _MyAppState extends State<IosPayment> {
         "device_id" : ""+NetworkUtil.deviceId,
       };
 
+      prefs.setString('IAP_receipt', ""+purchaseDetails.verificationData.serverVerificationData);
+      prefs.setString('IAP_amount', ""+amountSub);
+
      //print("receipt_data : " + body.toString());
 
       _netUtil.post(NetworkUtil.verifyReceipt,body,false).then((dynamic res)
@@ -644,7 +648,16 @@ class _MyAppState extends State<IosPayment> {
                 (route) => false,
           );
           return Future<bool>.value(true);
-        } else {
+        }
+        else if ((res != null && res["MessageType"] == 0))
+        {
+          NetworkUtil.token = res["token"];
+          NetworkUtil.secret = res["secret"];
+          prefs.setString('token', res["token"]);
+          prefs.setString('secret', res["secret"]);
+          return Future<bool>.value(false);
+        }
+        else {
          /* Fluttertoast.showToast(
               msg: 'Transaction failed.Please try again!',
               toastLength: Toast.LENGTH_LONG,

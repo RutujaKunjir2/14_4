@@ -230,7 +230,7 @@ class _MyHomePageState extends State<MyHomePage> {
       "secret": ""+prefs.getString('secret')!,
     };
 
-     //print("refresh body : " + body.toString());
+      //print("refresh body : " + body.toString());
 
     _netUtil.post(NetworkUtil.refreshToken,body,true).then((dynamic res) {
 
@@ -239,7 +239,6 @@ class _MyHomePageState extends State<MyHomePage> {
       if(res != null && res["MessageType"] == 1)
       {
 
-        NetworkUtil.token = res["tokens"]["access_token"];
         NetworkUtil.isLogin = true;
 
 
@@ -253,13 +252,19 @@ class _MyHomePageState extends State<MyHomePage> {
           NetworkUtil.isSubScribedUser = true;
         }
 
-        prefs.setString('token', res["tokens"]["access_token"]);
-        prefs.setBool('isLogin', true);
-
 
         Navigator.pushReplacement(context,
             MaterialPageRoute(builder: (context) => const Dashboard()));
 
+        if(res["tokens"]["access_token"] != null){
+          NetworkUtil.token = res["tokens"]["access_token"];
+          prefs.setString('token', res["tokens"]["access_token"]);
+          prefs.setBool('isLogin', true);
+        }
+        else{
+            print("Call Verify token");
+            iapService();
+        }
         //return res["token"];
 
       }
@@ -308,6 +313,46 @@ class _MyHomePageState extends State<MyHomePage> {
           textColor: Colors.white,
           fontSize: 16.0
       );
+    });
+  }
+
+  void iapService()
+  {
+
+    var body = {
+      "receipt_data" : ""+prefs.getString('IAP_receipt')!,
+      "is_renewable" : "1",
+      "amount" : ""+prefs.getString('IAP_amount')!,
+      "device_id" : ""+NetworkUtil.deviceId,
+    };
+
+    //print("receipt_data2 : " + body.toString());
+
+    _netUtil.post(NetworkUtil.verifyReceipt,body,false).then((dynamic res)
+    {
+      //print("VerifyReceipt2 : " + res.toString());
+
+      if ((res != null && res["MessageType"] == 1))
+      {
+        NetworkUtil.token = res["token"];
+        NetworkUtil.secret = res["secret"];
+        prefs.setString('token', res["token"]);
+        prefs.setString('secret', res["secret"]);
+      }
+      else if ((res != null && res["MessageType"] == 0))
+      {
+        NetworkUtil.token = res["token"];
+        NetworkUtil.secret = res["secret"];
+        prefs.setString('token', res["token"]);
+        prefs.setString('secret', res["secret"]);
+      }
+      else {
+
+      }
+
+    }).catchError((e)
+    {
+      print(e);
     });
   }
 
