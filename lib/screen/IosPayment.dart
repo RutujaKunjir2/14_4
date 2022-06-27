@@ -30,8 +30,8 @@ const bool _kAutoConsume = true;
 // const String yearlyPlan = 'YearlyCFESubscription';
 
 // New In App Submission with new version 1.0.13
-const String halfYearPlan = 'HalfYearlyPlanCef';
-const String yearlyPlan = 'YearlyPlanCef';
+const String halfYearPlan = 'Half_Yearly_Plan';
+const String yearlyPlan = 'Yearly_Plan';
 
 const List<String> _kProductIds = <String>[
   halfYearPlan,

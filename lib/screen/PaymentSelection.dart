@@ -522,10 +522,10 @@ class PaymentSelectionState extends State<PaymentSelection> {
               {
                 if(res["app_store_plan"] != null)
                 {
-                  if (res["app_store_plan"] == "HalfYearlyPlanCef") {
+                  if (res["app_store_plan"] == "Half_Yearly_Plan") {
                     subPlan = "Half Yearly";
                   }
-                  else if (res["app_store_plan"] == "YearlyPlanCef"){
+                  else if (res["app_store_plan"] == "Yearly_Plan"){
                     subPlan = "Yearly";
                   }
                   else {
