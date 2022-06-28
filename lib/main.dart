@@ -252,17 +252,15 @@ class _MyHomePageState extends State<MyHomePage> {
           NetworkUtil.isSubScribedUser = true;
         }
 
-
-        Navigator.pushReplacement(context,
-            MaterialPageRoute(builder: (context) => const Dashboard()));
-
         if(res["tokens"]["access_token"] != null){
           NetworkUtil.token = res["tokens"]["access_token"];
           prefs.setString('token', res["tokens"]["access_token"]);
           prefs.setBool('isLogin', true);
+          Navigator.pushReplacement(context,
+              MaterialPageRoute(builder: (context) => const Dashboard()));
         }
         else{
-            print("Call Verify token");
+            //print("Call Verify token");
             iapService();
         }
         //return res["token"];
@@ -326,11 +324,11 @@ class _MyHomePageState extends State<MyHomePage> {
       "device_id" : ""+NetworkUtil.deviceId,
     };
 
-    //print("receipt_data2 : " + body.toString());
+      //print("receipt_da : " + body.toString());
 
     _netUtil.post(NetworkUtil.verifyReceipt,body,false).then((dynamic res)
     {
-      //print("VerifyReceipt2 : " + res.toString());
+      //print("VerifyRece : " + res.toString());
 
       if ((res != null && res["MessageType"] == 1))
       {
@@ -338,6 +336,8 @@ class _MyHomePageState extends State<MyHomePage> {
         NetworkUtil.secret = res["secret"];
         prefs.setString('token', res["token"]);
         prefs.setString('secret', res["secret"]);
+        Navigator.pushReplacement(context,
+            MaterialPageRoute(builder: (context) => const Dashboard()));
       }
       else if ((res != null && res["MessageType"] == 0))
       {
@@ -345,9 +345,11 @@ class _MyHomePageState extends State<MyHomePage> {
         NetworkUtil.secret = res["secret"];
         prefs.setString('token', res["token"]);
         prefs.setString('secret', res["secret"]);
+        Navigator.pushReplacement(context,
+            MaterialPageRoute(builder: (context) => const Dashboard()));
       }
       else {
-
+        print("VerifyRece");
       }
 
     }).catchError((e)
