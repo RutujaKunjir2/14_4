@@ -50,7 +50,6 @@ class _MyAppState extends State<IosPayment> {
   List<String> _notFoundIds = [];
   List<ProductDetails> _products = [];
   List<PurchaseDetails> _purchases = [];
-  List<PurchaseDetails> purchaseDetailsRestore = [];
   List<String> _consumables = [];
   bool _isAvailable = false;
   bool _purchasePending = false;
@@ -68,7 +67,6 @@ class _MyAppState extends State<IosPayment> {
         _inAppPurchase.purchaseStream;
     _subscription = purchaseUpdated.listen((purchaseDetailsList)
     {
-      purchaseDetailsRestore = purchaseDetailsList;
       _listenToPurchaseUpdated(purchaseDetailsList);
     }, onDone: () {
       _subscription.cancel();
@@ -436,26 +434,20 @@ class _MyAppState extends State<IosPayment> {
             ),
             onPressed: ()
             {
-              //_inAppPurchase.restorePurchases();
-              if (purchaseDetailsRestore.isEmpty)
-              {
-                showDialog(
-                  barrierColor: Colors.black26,
-                  context: context,
-                  builder: (context) {
-                    return CustomAlertDialog(
-                      title: "Alert",
-                      description: "No previous purchase to restore.",
-                      okbtn: true,
-                      cancelbtn: false,
-                    );
-                  },
-                );
-              }
-              else
-              {
-                showRestoreDialog(context,purchaseDetailsRestore.last);
-              }
+              _inAppPurchase.restorePurchases();
+
+              showDialog(
+                barrierColor: Colors.black26,
+                context: context,
+                builder: (context) {
+                  return CustomAlertDialog(
+                    title: "Alert",
+                    description: "Previous purchase is restored.",
+                    okbtn: true,
+                    cancelbtn: false,
+                  );
+                },
+              );
 
             },
           ),
@@ -524,186 +516,8 @@ class _MyAppState extends State<IosPayment> {
     }
   }
 
-  Future<bool> _verifyPurchase2(PurchaseDetails purchaseDetails) async {
-    // IMPORTANT!! Always verify a purchase before delivering the product.
-    // For the purpose of an example, we directly return true.
-    Map bodyRes = {
-      "serverVerification":
-      purchaseDetails.verificationData.serverVerificationData,
-      "localVerification":
-      purchaseDetails.verificationData.localVerificationData,
-      "productID": purchaseDetails.productID,
-      "purchaseID": purchaseDetails.purchaseID,
-    };
-
-    var res = await iapService2(purchaseDetails);
-
-    if (res) {
-      return Future<bool>.value(true);
-    }
-    else {
-      return Future<bool>.value(false);
-    }
-  }
-
   void _handleInvalidPurchase(PurchaseDetails purchaseDetails) {
     // handle invalid purchase here if  _verifyPurchase` failed.
-  }
-
-  showRestoreDialog(BuildContext context, PurchaseDetails purchaseDetails)
-  {
-    showDialog(
-      barrierColor: Colors.black26,
-      context: context,
-      builder: (context) {
-        return Dialog(
-              elevation: 0,
-              backgroundColor: Color(0xffffffff),
-              shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(15.0),),
-              child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    SizedBox(height: 15),
-                    Text(
-                        "Alert",
-                        style: TextStyle(
-                        fontSize: 18.0,
-                        fontWeight: FontWeight.bold,
-                        ),
-                    ),
-                    SizedBox(height: 15),
-                    Text("Click ok to restore previous purchase."),
-                    SizedBox(height: 20),
-                    Divider(
-                    height: 1,
-                    ),
-                    Visibility(
-                        child: Container(
-                             width: MediaQuery.of(context).size.width,
-                             height: 50,
-                             child: InkWell(
-                                  highlightColor: Colors.grey[200],
-                                  onTap: () {
-                                       Navigator.of(context).pop();
-                                       _listenToPurchaseUpdated2(purchaseDetails);
-                                   },
-                                  child: Center(
-                                      child: Text(
-                                            "Ok",
-                                            style: TextStyle(
-                                            fontSize: 18.0,
-                                            color: Theme.of(context).primaryColor,
-                                            fontWeight: FontWeight.bold,
-                                            ),
-                                        ),
-                                  ),
-                             ),
-                        ),
-                        visible: true,
-                    ),
-                    Divider(
-                        height: 1,
-                    ),
-                    Visibility(
-                         child: Container(
-                              width: MediaQuery.of(context).size.width,
-                              height: 50,
-                              child: InkWell(
-                                    borderRadius: BorderRadius.only(
-                                    bottomLeft: Radius.circular(15.0),
-                                    bottomRight: Radius.circular(15.0),
-                                    ),
-                                    highlightColor: Colors.grey[200],
-                                    onTap: () {
-                                        Navigator.of(context).pop();
-                                    },
-                                    child: Center(
-                                          child: Text(
-                                                "Cancel",
-                                                style: TextStyle(
-                                                 fontSize: 16.0,
-                                                  fontWeight: FontWeight.normal,
-                                                  ),
-                                           ),
-                                    ),
-                              ),
-                         ),
-                          visible: true,
-                    ),
-              ],
-        ),
-        );
-      },
-    );
-  }
-
-  showLoaderDialog(BuildContext context){
-    AlertDialog alert=AlertDialog(
-      content: new Row(
-        children: [
-          CircularProgressIndicator(backgroundColor: Colors.blue,),
-          Container(margin: EdgeInsets.only(left: 7),child:Text("Loading..." )),
-        ],),
-    );
-    showDialog(barrierDismissible: false,
-      context:context,
-      builder:(BuildContext context){
-        return alert;
-      },
-    );
-  }
-
-  Future<void> _listenToPurchaseUpdated2(PurchaseDetails purchaseDetails) async
-  {
-    showLoaderDialog(context);
-    try
-    {
-      //print("WelcomeBack_rr =  "+purchaseDetails.productID.toString());
-
-      if (purchaseDetails.status == PurchaseStatus.pending) {
-        Navigator.of(context).pop();
-        showPendingUI();
-      } else {
-        if (purchaseDetails.status == PurchaseStatus.error) {
-          Navigator.of(context).pop();
-          handleError(purchaseDetails.error!);
-        }
-        else if (purchaseDetails.status == PurchaseStatus.purchased ||
-            purchaseDetails.status == PurchaseStatus.restored)
-        {
-          bool valid = await _verifyPurchase2(purchaseDetails);
-          if (valid)
-          {
-            deliverProduct(purchaseDetails);
-          } else {
-            _handleInvalidPurchase(purchaseDetails);
-            return;
-          }
-        }
-        else{
-          Navigator.of(context).pop();
-          showDialog(
-            barrierColor: Colors.black26,
-            context: context,
-            builder: (context) {
-              return CustomAlertDialog(
-                title: "Alert",
-                description: "No previous purchase to restore.",
-                okbtn: true,
-                cancelbtn: false,
-              );
-            },
-          );
-        }
-        if (purchaseDetails.pendingCompletePurchase) {
-          await _inAppPurchase.completePurchase(purchaseDetails);
-        }
-      }
-    }
-    catch(err){
-      print(err.toString());
-    }
   }
 
   void _listenToPurchaseUpdated(List<PurchaseDetails> purchaseDetailsList) {
@@ -874,112 +688,7 @@ class _MyAppState extends State<IosPayment> {
 
       }).catchError((e)
       {
-        Fluttertoast.showToast(
-            msg: 'Something went wrong.',
-            toastLength: Toast.LENGTH_LONG,
-            gravity: ToastGravity.SNACKBAR,
-            timeInSecForIosWeb: 1,
-            backgroundColor: Color(0xffE74C3C),
-            textColor: Colors.white,
-            fontSize: 16.0
-        );
-      });
-    }
-    return Future<bool>.value(false);
-  }
-
-  Future<bool> iapService2(PurchaseDetails purchaseDetails) async
-  {
-    if (purchaseDetails.status == PurchaseStatus.purchased ||
-        purchaseDetails.status == PurchaseStatus.restored)
-    {
-      var amountSub = "0";
-      for(final prod in _products){
-        if (prod.id == purchaseDetails.productID){
-          amountSub = prod.price;
-        }
-      }
-
-      var body = {
-        "receipt_data" : purchaseDetails.verificationData.serverVerificationData,
-        "is_renewable" : "1",
-        "amount" : ""+amountSub,
-        "device_id" : ""+NetworkUtil.deviceId,
-      };
-
-      prefs.setString('IAP_receipt', ""+purchaseDetails.verificationData.serverVerificationData);
-      prefs.setString('IAP_amount', ""+amountSub);
-
-       //print("receipt_data_rr : " + body.toString());
-
-      _netUtil.post(NetworkUtil.verifyReceipt,body,false).then((dynamic res)
-      {
-        //print("VerifyReceipt_rr : " + res.toString());
-        Navigator.of(context).pop();
-
-        if ((res != null && res["MessageType"] == 0))
-        {
-          NetworkUtil.token = res["token"];
-          NetworkUtil.secret = res["secret"];
-          NetworkUtil.isLogin = true;
-          NetworkUtil.isSocialLogin = false;
-
-          if (res["SubscriptionEndDate"] != null) {
-            NetworkUtil.subscription_end_date = res["SubscriptionEndDate"];
-          }
-
-          if (res["subscribed"] == 0) {
-            NetworkUtil.isSubScribedUser = false;
-          } else {
-            NetworkUtil.isSubScribedUser = true;
-          }
-
-          prefs.setString('token', res["token"]);
-          prefs.setString('secret', res["secret"]);
-          prefs.setBool('isSocialLogin', false);
-          prefs.setBool('isLogin', true);
-
-          Fluttertoast.showToast(
-              msg: 'Your purchase was restored successfully',
-              toastLength: Toast.LENGTH_LONG,
-              gravity: ToastGravity.SNACKBAR,
-              timeInSecForIosWeb: 1,
-              backgroundColor: Color(0xff69F0AE),
-              textColor: Color(0xff19442C),
-              fontSize: 16.0);
-
-          Navigator.pushAndRemoveUntil(
-            context,
-            MaterialPageRoute(
-              builder: (BuildContext context) => const Dashboard(),
-            ),
-                (route) => false,
-          );
-          return Future<bool>.value(true);
-        }
-        else if ((res != null && res["MessageType"] == 0))
-        {
-          NetworkUtil.token = res["token"];
-          NetworkUtil.secret = res["secret"];
-          prefs.setString('token', res["token"]);
-          prefs.setString('secret', res["secret"]);
-          return Future<bool>.value(false);
-        }
-        else {
-          /* Fluttertoast.showToast(
-              msg: 'Transaction failed.Please try again!',
-              toastLength: Toast.LENGTH_LONG,
-              gravity: ToastGravity.SNACKBAR,
-              timeInSecForIosWeb: 1,
-              backgroundColor: Color(0xffE74C3C),
-              textColor: Colors.white,
-              fontSize: 16.0);*/
-
-          return Future<bool>.value(false);
-        }
-
-      }).catchError((e)
-      {
+        print(e);
         Fluttertoast.showToast(
             msg: 'Something went wrong.',
             toastLength: Toast.LENGTH_LONG,
