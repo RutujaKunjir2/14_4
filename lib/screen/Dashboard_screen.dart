@@ -697,7 +697,7 @@ class _DashboardWidgetState extends State<Dashboard>
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
                           Text(
-                            "Welcome,",
+                            "Welcome",
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
                               color: Colors.black,
@@ -740,7 +740,10 @@ class _DashboardWidgetState extends State<Dashboard>
                   Navigator.of(context).pop();
                 },
               ),
-              Divider(height: 3.0),
+              Visibility(
+                child: Divider(height: 3.0),
+                visible: NetworkUtil.isLogin,
+              ),
               Visibility(
                 child: ListTile(
                   leading: Icon(Icons.settings),
