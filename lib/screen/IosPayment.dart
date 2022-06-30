@@ -599,8 +599,7 @@ class _MyAppState extends State<IosPayment> {
 
   Future<bool> iapService(PurchaseDetails purchaseDetails) async
   {
-    if (purchaseDetails.status == PurchaseStatus.purchased ||
-        purchaseDetails.status == PurchaseStatus.restored)
+    if (purchaseDetails.status == PurchaseStatus.purchased)
     {
       var amountSub = "0";
       for(final prod in _products){
@@ -627,43 +626,54 @@ class _MyAppState extends State<IosPayment> {
 
         if ((res != null && res["MessageType"] == 1))
         {
-          NetworkUtil.token = res["token"];
-          NetworkUtil.secret = res["secret"];
-          NetworkUtil.isLogin = true;
-          NetworkUtil.isSocialLogin = false;
+          if(_purchasePending){
+            NetworkUtil.token = res["token"];
+            NetworkUtil.secret = res["secret"];
+            NetworkUtil.isLogin = true;
+            NetworkUtil.isSocialLogin = false;
 
-          if (res["SubscriptionEndDate"] != null) {
-            NetworkUtil.subscription_end_date = res["SubscriptionEndDate"];
+            if (res["SubscriptionEndDate"] != null) {
+              NetworkUtil.subscription_end_date = res["SubscriptionEndDate"];
+            }
+
+            if (res["subscribed"] == 0) {
+              NetworkUtil.isSubScribedUser = false;
+            } else {
+              NetworkUtil.isSubScribedUser = true;
+            }
+
+            prefs.setString('token', res["token"]);
+            prefs.setString('secret', res["secret"]);
+            prefs.setBool('isSocialLogin', false);
+            prefs.setBool('isLogin', true);
+
+            Fluttertoast.showToast(
+                msg: 'Your purchase was stored successfully',
+                toastLength: Toast.LENGTH_LONG,
+                gravity: ToastGravity.SNACKBAR,
+                timeInSecForIosWeb: 1,
+                backgroundColor: Color(0xff69F0AE),
+                textColor: Color(0xff19442C),
+                fontSize: 16.0);
+
+            Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(
+                builder: (BuildContext context) => const Dashboard(),
+              ),
+                  (route) => false,
+            );
+            return Future<bool>.value(true);
+          }
+          else
+          {
+            NetworkUtil.token = res["token"];
+            NetworkUtil.secret = res["secret"];
+            prefs.setString('token', res["token"]);
+            prefs.setString('secret', res["secret"]);
+            return Future<bool>.value(false);
           }
 
-          if (res["subscribed"] == 0) {
-            NetworkUtil.isSubScribedUser = false;
-          } else {
-            NetworkUtil.isSubScribedUser = true;
-          }
-
-          prefs.setString('token', res["token"]);
-          prefs.setString('secret', res["secret"]);
-          prefs.setBool('isSocialLogin', false);
-          prefs.setBool('isLogin', true);
-
-          Fluttertoast.showToast(
-              msg: 'Successfully Subscribed.',
-              toastLength: Toast.LENGTH_LONG,
-              gravity: ToastGravity.SNACKBAR,
-              timeInSecForIosWeb: 1,
-              backgroundColor: Color(0xff69F0AE),
-              textColor: Color(0xff19442C),
-              fontSize: 16.0);
-
-          Navigator.pushAndRemoveUntil(
-            context,
-            MaterialPageRoute(
-              builder: (BuildContext context) => const Dashboard(),
-            ),
-                (route) => false,
-          );
-          return Future<bool>.value(true);
         }
         else if ((res != null && res["MessageType"] == 0))
         {
