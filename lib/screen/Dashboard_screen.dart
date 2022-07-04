@@ -656,17 +656,21 @@ class _DashboardWidgetState extends State<Dashboard>
                   color: Color(0xff000000), fontWeight: FontWeight.bold)),
           iconTheme: IconThemeData(color: Colors.black),
           actions: <Widget>[
-            Padding(
-                padding: EdgeInsets.only(right: 20.0),
-                child: GestureDetector(
-                  onTap: () {
-                    shareApp(context);
-                  },
-                  child: Icon(
-                    Icons.share,
-                    size: 26.0,
-                  ),
-                )),
+            Visibility(
+              child: Padding(
+                  padding: EdgeInsets.only(right: 20.0),
+                  child: GestureDetector(
+                    onTap: () {
+                      shareApp(context);
+                    },
+                    child: Icon(
+                      Icons.share,
+                      size: 26.0,
+                    ),
+                  )
+              ),
+              visible: Platform.isAndroid,
+            ),
           ],
         ),
         drawer:
