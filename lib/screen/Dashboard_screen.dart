@@ -131,7 +131,21 @@ class _DashboardWidgetState extends State<Dashboard>
           ),
         ).then((value) => setState(() => {_selectedIndex = 0, getUserData()}));
       }
-      else {
+      else
+      {
+        try
+        {
+          if (Platform.isIOS) {
+            Navigator.push(
+              context,
+              CupertinoPageRoute(
+                builder: (BuildContext context) => IosPayment(),
+              ),
+            );
+          }
+        } on PlatformException {
+          print('Failed to get platform version');
+        }
         Fluttertoast.showToast(
             msg: NetworkUtil.subscription_end_date == ''
                 ? 'Start your subscription'
@@ -156,6 +170,19 @@ class _DashboardWidgetState extends State<Dashboard>
         ).then((value) => setState(() => {_selectedIndex = 0}));
       }
       else {
+        try
+        {
+          if (Platform.isIOS) {
+            Navigator.push(
+              context,
+              CupertinoPageRoute(
+                builder: (BuildContext context) => IosPayment(),
+              ),
+            );
+          }
+        } on PlatformException {
+          print('Failed to get platform version');
+        }
         Fluttertoast.showToast(
             msg: NetworkUtil.subscription_end_date == ''
                 ? 'Start your subscription'
@@ -190,6 +217,19 @@ class _DashboardWidgetState extends State<Dashboard>
           ),
         ).then((value) => setState(() => {_selectedIndex = 0}));
       } else {
+        try
+        {
+          if (Platform.isIOS) {
+            Navigator.push(
+              context,
+              CupertinoPageRoute(
+                builder: (BuildContext context) => IosPayment(),
+              ),
+            );
+          }
+        } on PlatformException {
+          print('Failed to get platform version');
+        }
         Fluttertoast.showToast(
             msg: NetworkUtil.subscription_end_date == ''
                 ? 'Start your subscription'
