@@ -946,6 +946,14 @@ class _DashboardWidgetState extends State<Dashboard>
                     await FlutterEmailSender.send(email);
                   } on PlatformException catch (err) {
                     print("PlatformException new card : " + err.toString());
+                    Fluttertoast.showToast(
+                        msg: 'No email clients found!',
+                        toastLength: Toast.LENGTH_LONG,
+                        gravity: ToastGravity.SNACKBAR,
+                        timeInSecForIosWeb: 1,
+                        backgroundColor: Color(0xffE74C3C),
+                        textColor: Colors.white,
+                        fontSize: 16.0);
                   } catch (err) {
                     print("new card : " + err.toString());
                   }
