@@ -13,6 +13,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../models/CustomAlertDialog.dart';
 import 'dart:io' show Platform;
 
 import '../icons.dart';
@@ -84,6 +85,107 @@ class _BuildProfileState extends State<BuildProfile> {
 
     if(await secureStorage.readSecureData('password') != null){
       password = await secureStorage.readSecureData('password');
+    }
+
+    if (Platform.isIOS){
+      showDialog(
+        barrierColor: Colors.black26,
+        context: context,
+        builder: (context) {
+          return Dialog(
+            elevation: 0,
+            backgroundColor: Color(0xffffffff),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(15.0),
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                SizedBox(height: 15),
+                Text(
+                  "Alert",
+                  style: TextStyle(
+                    fontSize: 18.0,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                SizedBox(height: 15),
+                Center(
+                    child: Text("Adding or Updating profile details is optional. You can skip this.",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 15.0,
+                      ),
+                    ),
+                ),
+                SizedBox(height: 20),
+                Divider(
+                  height: 1,
+                ),
+                Visibility(
+                  child: Container(
+                    width: MediaQuery.of(context).size.width,
+                    height: 40,
+                    child: InkWell(
+                      highlightColor: Colors.grey[200],
+                      onTap: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: Center(
+                        child: Text(
+                          "Proceed",
+                          style: TextStyle(
+                            fontSize: 17.0,
+                            color: Theme.of(context).primaryColor,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  visible: true,
+                ),
+                Divider(
+                  height: 1,
+                ),
+                Visibility(
+                  child: Container(
+                    width: MediaQuery.of(context).size.width,
+                    height: 40,
+                    child: InkWell(
+                      borderRadius: BorderRadius.only(
+                        bottomLeft: Radius.circular(15.0),
+                        bottomRight: Radius.circular(15.0),
+                      ),
+                      highlightColor: Colors.grey[200],
+                      onTap: () {
+                        Navigator.of(context).pop();
+                        Navigator.pushAndRemoveUntil(
+                          context,
+                          MaterialPageRoute(
+                            builder: (BuildContext context) => const Dashboard(),
+                          ),
+                              (route) => false,
+                        );
+                      },
+                      child: Center(
+                        child: Text(
+                          "Skip",
+                          style: TextStyle(
+                            fontSize: 16.0,
+                            fontWeight: FontWeight.normal,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  visible: true,
+                ),
+              ],
+            ),
+          );
+        },
+      );
     }
 
     if(isFromHome){
