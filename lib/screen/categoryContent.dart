@@ -16,6 +16,7 @@ import 'dart:async';
 import '../icons.dart';
 import 'Login_screen.dart';
 import 'PaymentSelection.dart';
+import 'dart:io' show Platform;
 import 'package:share_plus/share_plus.dart';
 
 class categoryContent extends StatefulWidget {
@@ -403,17 +404,21 @@ class Expansionpaneltate extends State<categoryContent> {
                                     });
                                   },
                                 ),
-                                Padding(
-                                    padding: EdgeInsets.only(right: 20.0),
-                                    child: GestureDetector(
-                                      onTap: () {
-                                        shareApp(context);
-                                      },
-                                      child: Icon(
-                                        Icons.share,
-                                        size: 26.0,
-                                      ),
-                                    )),
+                                Visibility(
+                                  child: Padding(
+                                      padding: EdgeInsets.only(right: 20.0),
+                                      child: GestureDetector(
+                                        onTap: () {
+                                          shareApp(context);
+                                        },
+                                        child: Icon(
+                                          Icons.share,
+                                          size: 26.0,
+                                        ),
+                                      )
+                                  ),
+                                  visible: Platform.isAndroid,
+                                ),
                               ]),
                           body:
                               // RefreshIndicator(

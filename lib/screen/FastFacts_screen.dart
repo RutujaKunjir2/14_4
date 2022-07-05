@@ -7,6 +7,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:async';
+import 'dart:io' show Platform;
 
 class FastFactsScreen extends StatefulWidget {
   FastFactsScreen({Key? key}) : super(key: key);
@@ -182,17 +183,21 @@ class FastFacts extends State<FastFactsScreen> {
                                     fontWeight: FontWeight.bold)),
                             iconTheme: IconThemeData(color: Colors.black),
                             actions: <Widget>[
-                              Padding(
-                                  padding: EdgeInsets.only(right: 20.0),
-                                  child: GestureDetector(
-                                    onTap: () {
-                                      shareApp(context);
-                                    },
-                                    child: Icon(
-                                      Icons.share,
-                                      size: 26.0,
-                                    ),
-                                  )),
+                              Visibility(
+                                child: Padding(
+                                    padding: EdgeInsets.only(right: 20.0),
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        shareApp(context);
+                                      },
+                                      child: Icon(
+                                        Icons.share,
+                                        size: 26.0,
+                                      ),
+                                    )
+                                ),
+                                visible: Platform.isAndroid,
+                              ),
                             ],
                           ),
                           body:

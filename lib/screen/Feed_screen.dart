@@ -12,6 +12,7 @@ import 'dart:async';
 //import 'package:scroll_to_index/scroll_to_index.dart';
 import '../icons.dart';
 import 'Login_screen.dart';
+import 'dart:io' show Platform;
 
 class FeedScreen extends StatefulWidget {
   FeedScreen({Key? key}) : super(key: key);
@@ -255,17 +256,21 @@ class FeedScreenList extends State<FeedScreen> {
                                     fontWeight: FontWeight.bold)),
                             iconTheme: IconThemeData(color: Colors.black),
                             actions: <Widget>[
-                              Padding(
-                                  padding: EdgeInsets.only(right: 20.0),
-                                  child: GestureDetector(
-                                    onTap: () {
-                                      shareApp(context);
-                                    },
-                                    child: Icon(
-                                      Icons.share,
-                                      size: 26.0,
-                                    ),
-                                  )),
+                              Visibility(
+                                child: Padding(
+                                    padding: EdgeInsets.only(right: 20.0),
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        shareApp(context);
+                                      },
+                                      child: Icon(
+                                        Icons.share,
+                                        size: 26.0,
+                                      ),
+                                    )
+                                ),
+                                visible: Platform.isAndroid,
+                              ),
                             ],
                           ),
                           body: RefreshIndicator(
