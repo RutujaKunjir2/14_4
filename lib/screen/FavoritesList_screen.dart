@@ -229,7 +229,7 @@ class FavoritesListScreen extends State<FavoritesList> {
                                       ),
                                     )
                                 ),
-                                visible: Platform.isAndroid,
+                                visible: true,
                               ),
                             ],
                           ),
@@ -567,7 +567,7 @@ class FavoritesListScreen extends State<FavoritesList> {
     final RenderBox box = context.findRenderObject() as RenderBox;
 
     await Share.share(
-        'hey! check out this new app android : https://play.google.com/store/apps/details?id=com.children.cfe&hl=en  ios : https://apps.apple.com/us/app/children-for-environment/id1609925887',
+        'hey! check out this new app android : https://play.google.com/store/apps/details?id=com.children.cfe&hl=en  ios : https://apps.apple.com/app/cfe-children-for-environment/id1609925887',
         subject: 'Children For Environment',
         sharePositionOrigin: box.globalToLocal(Offset.zero) & box.size);
   }
