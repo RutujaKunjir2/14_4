@@ -1836,7 +1836,7 @@ class _DashboardWidgetState extends State<Dashboard>
     // set up the AlertDialog
     AlertDialog alert = AlertDialog(
       title: Text("App Update"),
-      content: Text("New version of the app is available, please update?"),
+      content: Text("New version of the app is available, pls update"),
       actions: [
         cancelButton,
         continueButton,
