@@ -227,17 +227,29 @@ class Expansionpaneltate extends State<categoryContent> {
       });
     }
 
-    NetworkUtil.getCategoriesdetail = "api/category/" +
-        widget.categoriesModel_.id.toString() +
-        "/posts/" +
-        pageindex.toString() +
-        "/" +
-        pageCount.toString();
+    if (NetworkUtil
+        .isSubScribedUser)
+    {
+      NetworkUtil.getCategoriesdetail = "api/category/" +
+          widget.categoriesModel_.id.toString() +
+          "/posts/" +
+          pageindex.toString() +
+          "/" +
+          pageCount.toString();
+    }
+    else {
+      NetworkUtil.getCategoriesdetail = "api/category/" +
+          widget.categoriesModel_.id.toString() +
+          "/free-posts";
+    }
+
     return _netUtil
         .get(NetworkUtil.getCategoriesdetail, true)
         .then((dynamic res) {
       //json.decode used to decode response.body(string to map)
       //print(res['posts'].toString());
+      print("UrlD = "+NetworkUtil.getCategoriesdetail);
+      print("UrlD_Res = "+res.toString());
 
       if (res != null && res["MessageType"] == 1) {
         getDetailList(res['posts']);

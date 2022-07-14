@@ -88,8 +88,17 @@ class FastFacts extends State<FastFactsScreen> {
       });
     }
 
-    NetworkUtil.getFastFactList =
-        "api/fast-facts/" + pageindex.toString() + "/" + pageCount.toString();
+    if (NetworkUtil
+        .isSubScribedUser)
+    {
+      NetworkUtil.getFastFactList =
+          "api/fast-facts/" + pageindex.toString() + "/" + pageCount.toString();
+    }
+    else {
+      NetworkUtil.getFastFactList =
+          "api/free-fast-facts";
+    }
+
     return _netUtil.get(NetworkUtil.getFastFactList, true).then((dynamic res) {
       //json.decode used to decode response.body(string to map)
       //print(res['posts'].toString());

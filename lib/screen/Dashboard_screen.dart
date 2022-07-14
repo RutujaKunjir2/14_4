@@ -509,7 +509,7 @@ class _DashboardWidgetState extends State<Dashboard>
       appStoreVersion = res['AppversionIos'].toString();
 
      //print("user : " + res.toString());
-     // print("userToken : " + NetworkUtil.token);
+     print("userToken : " + NetworkUtil.token);
 
       if (res != null && res["MessageType"] == 1)
       {
@@ -1180,24 +1180,35 @@ class _DashboardWidgetState extends State<Dashboard>
                                                                             categoryListView![index],
                                                                           )));
                                                             }
-                                                            else {
+                                                            else
+                                                            {
                                                               try
                                                               {
-                                                                if (Platform.isAndroid) {
-                                                                  Navigator.push(
+                                                                _deleteCacheDir();
+                                                                Navigator.push(
                                                                     context,
                                                                     CupertinoPageRoute(
-                                                                      builder: (BuildContext context) => WebViewEx(),
-                                                                    ),
-                                                                  );
-                                                                } else if (Platform.isIOS) {
-                                                                  Navigator.push(
-                                                                    context,
-                                                                    CupertinoPageRoute(
-                                                                      builder: (BuildContext context) => IosPayment(),
-                                                                    ),
-                                                                  );
-                                                                }
+                                                                        builder: (context) =>
+                                                                            categoryContent(
+                                                                              categoriesModel_:
+                                                                              categoryListView![index],
+                                                                            )));
+
+                                                                // if (Platform.isAndroid) {
+                                                                //   Navigator.push(
+                                                                //     context,
+                                                                //     CupertinoPageRoute(
+                                                                //       builder: (BuildContext context) => WebViewEx(),
+                                                                //     ),
+                                                                //   );
+                                                                // } else if (Platform.isIOS) {
+                                                                //   Navigator.push(
+                                                                //     context,
+                                                                //     CupertinoPageRoute(
+                                                                //       builder: (BuildContext context) => IosPayment(),
+                                                                //     ),
+                                                                //   );
+                                                                // }
                                                               } on PlatformException {
                                                                 print('Failed to get platform version');
                                                               }
@@ -1530,36 +1541,43 @@ class _DashboardWidgetState extends State<Dashboard>
               {
                 try
                 {
-                  if (Platform.isAndroid) {
-                    Navigator.push(
-                      context,
-                      CupertinoPageRoute(
-                        builder: (BuildContext context) => WebViewEx(),
-                      ),
-                    );
-                  }
-                  else if (Platform.isIOS) {
-                    Navigator.push(
-                      context,
-                      CupertinoPageRoute(
-                        builder: (BuildContext context) => IosPayment(),
-                      ),
-                    );
-                  }
+                  _deleteCacheDir();
+                  Navigator.push(
+                    context,
+                    CupertinoPageRoute(
+                      builder: (BuildContext context) => FastFactsScreen(),
+                    ),
+                  );
+                  // if (Platform.isAndroid) {
+                  //   Navigator.push(
+                  //     context,
+                  //     CupertinoPageRoute(
+                  //       builder: (BuildContext context) => WebViewEx(),
+                  //     ),
+                  //   );
+                  // }
+                  // else if (Platform.isIOS) {
+                  //   Navigator.push(
+                  //     context,
+                  //     CupertinoPageRoute(
+                  //       builder: (BuildContext context) => IosPayment(),
+                  //     ),
+                  //   );
+                  // }
                 } on PlatformException {
                   print('Failed to get platform version');
                 }
 
-                Fluttertoast.showToast(
-                    msg: NetworkUtil.subscription_end_date == ''
-                        ? 'Start your subscription'
-                        : 'Renew Your Membership',
-                    toastLength: Toast.LENGTH_LONG,
-                    gravity: ToastGravity.SNACKBAR,
-                    timeInSecForIosWeb: 1,
-                    backgroundColor: Color(0xffE74C3C),
-                    textColor: Colors.white,
-                    fontSize: 16.0);
+                // Fluttertoast.showToast(
+                //     msg: NetworkUtil.subscription_end_date == ''
+                //         ? 'Start your subscription'
+                //         : 'Renew Your Membership',
+                //     toastLength: Toast.LENGTH_LONG,
+                //     gravity: ToastGravity.SNACKBAR,
+                //     timeInSecForIosWeb: 1,
+                //     backgroundColor: Color(0xffE74C3C),
+                //     textColor: Colors.white,
+                //     fontSize: 16.0);
               }
 
             },
@@ -1767,7 +1785,7 @@ class _DashboardWidgetState extends State<Dashboard>
     // set up the AlertDialog
     AlertDialog alert = AlertDialog(
       title: Text("App Update"),
-      content: Text("New Version of App available please update?"),
+      content: Text("New version of the app is available, please update?"),
       actions: [
         cancelButton,
         continueButton,
