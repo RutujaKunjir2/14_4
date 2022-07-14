@@ -663,13 +663,13 @@ class Expansionpaneltate extends State<categoryContent> {
                                                             "Searching...");
                                                       }else{
                                                         return noDataView(
-                                                            "No Record found");
+                                                            "No record found");
                                                       }
                                                     }
                                                   } else {
                                                     // display error message if your list or data is null.
                                                     return noDataView(
-                                                        "No Record found");
+                                                        "No record found");
                                                   }
                                                 } else if (snapshot.hasError) {
                                                   // display your message if snapshot has error.
