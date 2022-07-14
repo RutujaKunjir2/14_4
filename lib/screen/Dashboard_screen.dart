@@ -23,6 +23,7 @@ import 'package:flutter/painting.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_email_sender/flutter_email_sender.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -572,38 +573,88 @@ class _DashboardWidgetState extends State<Dashboard>
         //print("user NetworkUtil: " + NetworkUtil.UserName + NetworkUtil.email);
       }
 
-      if (Platform.isAndroid) {
-        int InstallAppVersion =
-            getExtendedVersionNumber(NetworkUtil.AppVersion); // return 102003
-        int playversion = getExtendedVersionNumber(
-            playStoreVersion.toString()); // return 102011
-        if (InstallAppVersion < playversion) {
-          //print("update dialog ");
-          showAlertDialog(context);
-        } else {
-          setState(() {
-            // calling API to show the data
-            // you can also do it with any button click.
-            categoryListView = [];
-            categotiesListFuture = getcategoriesList();
-          });
-        }
-      } else if (Platform.isIOS) {
-        int InstallAppVersion =
-            getExtendedVersionNumber(NetworkUtil.AppVersion); // return 102003
-        int playversion = getExtendedVersionNumber(appStoreVersion.toString());
-        if (InstallAppVersion < playversion) {
-          //print("update dialog ");
-          showAlertDialog(context);
-        } else {
-          setState(() {
-            // calling API to show the data
-            // you can also do it with any button click.
-            categoryListView = [];
-            categotiesListFuture = getcategoriesList();
-          });
-        }
-      } else {
+      if (Platform.isAndroid)
+      {
+        PackageInfo.fromPlatform().then((PackageInfo packageInfo) {
+           try{
+             String appName = packageInfo.appName;
+             String packageName = packageInfo.packageName;
+             String version = packageInfo.version;
+             String buildNumber = packageInfo.buildNumber;
+
+             List versionCes = playStoreVersion.split(' ');
+             String playVersion = versionCes[0];
+             String playBuild = versionCes[1];
+
+             int InstallAppVersion = getExtendedVersionNumber(version); // return 102003
+
+             int playversion = getExtendedVersionNumber(playVersion); // return 102011
+
+             //print("Android = "+InstallAppVersion.toString()+" "+playversion.toString()+" "+buildNumber.toString() +" "+playBuild.toString());
+
+             if (InstallAppVersion < playversion)
+             {
+               showAlertDialog(context);
+             }
+             else if(int.parse(buildNumber) < int.parse(playBuild)){
+               showAlertDialog(context);
+             }
+             else {
+               setState(() {
+                 // calling API to show the data
+                 // you can also do it with any button click.
+                 categoryListView = [];
+                 categotiesListFuture = getcategoriesList();
+               });
+             }
+           }
+           catch (err ){
+             print(err);
+          }
+        });
+      }
+      else if (Platform.isIOS)
+      {
+        PackageInfo.fromPlatform().then((PackageInfo packageInfo) {
+           try
+           {
+             String appName = packageInfo.appName;
+             String packageName = packageInfo.packageName;
+             String version = packageInfo.version;
+             String buildNumber = packageInfo.buildNumber;
+
+             List versionCes = appStoreVersion.split(' ');
+             String playVersion = versionCes[0];
+             String playBuild = versionCes[1];
+
+             int InstallAppVersion = getExtendedVersionNumber(version); // return 102003
+
+             int playversion = getExtendedVersionNumber(playVersion); // return 102011
+
+            // print("iOS = "+InstallAppVersion.toString()+" "+playversion.toString()+" "+buildNumber.toString() +" "+playBuild.toString());
+
+             if (InstallAppVersion < playversion)
+             {
+               showAlertDialog(context);
+             }
+             else if(int.parse(buildNumber) < int.parse(playBuild)){
+               showAlertDialog(context);
+             }
+             else {
+               setState(() {
+                 // calling API to show the data
+                 // you can also do it with any button click.
+                 categoryListView = [];
+                 categotiesListFuture = getcategoriesList();
+               });
+             }
+           }
+           catch (err){
+             print(err);
+           }
+        });
+      }
+      else {
         //getUserData();
 
         //print("isSubScribedUser " + NetworkUtil.isSubScribedUser.toString());
