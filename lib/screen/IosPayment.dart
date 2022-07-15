@@ -442,7 +442,7 @@ class _MyAppState extends State<IosPayment> {
                 builder: (context) {
                   return CustomAlertDialog(
                     title: "Alert",
-                    description: "Previous purchase is restored.",
+                    description: "To restore the purchase, please follow the payment process. You will not be charged if the subscription is active.",
                     okbtn: true,
                     cancelbtn: false,
                   );

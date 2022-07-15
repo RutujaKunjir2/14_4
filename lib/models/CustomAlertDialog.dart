@@ -37,7 +37,17 @@ class _CustomAlertDialogState extends State<CustomAlertDialog> {
             ),
           ),
           SizedBox(height: 15),
-          Text("${widget.description}"),
+          Center(
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text("${widget.description}",
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 15.0,
+                ),
+              ),
+            ),
+          ),
           SizedBox(height: 20),
           Divider(
             height: 1,
