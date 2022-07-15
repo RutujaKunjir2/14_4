@@ -581,7 +581,7 @@ class _DashboardWidgetState extends State<Dashboard>
              String version = packageInfo.version;
              String buildNumber = packageInfo.buildNumber;
 
-             String playBuild = '3';//res['androidBuild'].toString();
+             String playBuild = res['androidBuild'].toString();
 
              int InstallAppVersion = getExtendedVersionNumber(version); // return 102003
 
@@ -618,7 +618,7 @@ class _DashboardWidgetState extends State<Dashboard>
              String version = packageInfo.version;
              String buildNumber = packageInfo.buildNumber;
 
-             String playBuild = '23';//res['iosBuild'].toString();
+             String playBuild = res['iosBuild'].toString();
 
              int InstallAppVersion = getExtendedVersionNumber(version); // return 102003
 
