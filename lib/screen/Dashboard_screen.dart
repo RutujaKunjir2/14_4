@@ -576,19 +576,16 @@ class _DashboardWidgetState extends State<Dashboard>
       if (Platform.isAndroid)
       {
         PackageInfo.fromPlatform().then((PackageInfo packageInfo) {
-           try{
-             String appName = packageInfo.appName;
-             String packageName = packageInfo.packageName;
+           try
+           {
              String version = packageInfo.version;
              String buildNumber = packageInfo.buildNumber;
 
-             List versionCes = playStoreVersion.split(' ');
-             String playVersion = versionCes[0];
-             String playBuild = versionCes[1];
+             String playBuild = '3';//res['androidBuild'].toString();
 
              int InstallAppVersion = getExtendedVersionNumber(version); // return 102003
 
-             int playversion = getExtendedVersionNumber(playVersion); // return 102011
+             int playversion = getExtendedVersionNumber(playStoreVersion); // return 102011
 
              //print("Android = "+InstallAppVersion.toString()+" "+playversion.toString()+" "+buildNumber.toString() +" "+playBuild.toString());
 
@@ -618,18 +615,14 @@ class _DashboardWidgetState extends State<Dashboard>
         PackageInfo.fromPlatform().then((PackageInfo packageInfo) {
            try
            {
-             String appName = packageInfo.appName;
-             String packageName = packageInfo.packageName;
              String version = packageInfo.version;
              String buildNumber = packageInfo.buildNumber;
 
-             List versionCes = appStoreVersion.split(' ');
-             String playVersion = versionCes[0];
-             String playBuild = versionCes[1];
+             String playBuild = '23';//res['iosBuild'].toString();
 
              int InstallAppVersion = getExtendedVersionNumber(version); // return 102003
 
-             int playversion = getExtendedVersionNumber(playVersion); // return 102011
+             int playversion = getExtendedVersionNumber(appStoreVersion); // return 102011
 
             // print("iOS = "+InstallAppVersion.toString()+" "+playversion.toString()+" "+buildNumber.toString() +" "+playBuild.toString());
 
