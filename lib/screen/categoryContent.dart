@@ -696,10 +696,10 @@ class Expansionpaneltate extends State<categoryContent> {
                                   ),
                                   inAsyncCall: _submit),
                           //),
+                            floatingActionButtonLocation: FloatingActionButtonLocation.miniCenterFloat,
                             floatingActionButton: Visibility(
                               child: FloatingActionButton.extended(
-                                backgroundColor: Colors.white,
-                                foregroundColor: Colors.white,
+                                backgroundColor: Color(0xffFF621C),
                                 onPressed: () {
                                   try
                                   {
@@ -723,9 +723,12 @@ class Expansionpaneltate extends State<categoryContent> {
                                   }
                                 },
                                 // icon: Icon(Icons.add),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(14.0),
+                                ),
                                 label: Text('Read more...',style:  TextStyle(
-                                    color: hexToColor("#120BD6"),
-                                    fontWeight: FontWeight.normal,
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
                                     fontSize: 15.0)),
                               ),
                               visible: !NetworkUtil.isSubScribedUser,
