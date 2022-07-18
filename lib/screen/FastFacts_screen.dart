@@ -2,12 +2,17 @@ import 'package:CFE/Networking/networkUtil.dart';
 import 'package:CFE/models/FastFactsData.dart';
 import 'package:CFE/models/fastFactsModel.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:async';
 import 'dart:io' show Platform;
+
+import 'IosPayment.dart';
+import 'WebViewScreen.dart';
 
 class FastFactsScreen extends StatefulWidget {
   FastFactsScreen({Key? key}) : super(key: key);
@@ -292,6 +297,54 @@ class FastFacts extends State<FastFactsScreen> {
                           ),
                           //),
                           //   ),
+                          floatingActionButton: Visibility(
+                            child: FloatingActionButton.extended(
+                              backgroundColor: Colors.white,
+                              foregroundColor: Colors.white,
+                              onPressed: () {
+                                try
+                                {
+                                  if (Platform.isAndroid) {
+                                    Navigator.push(
+                                      context,
+                                      CupertinoPageRoute(
+                                        builder: (BuildContext context) => WebViewEx(),
+                                      ),
+                                    );
+                                  }
+                                  else if (Platform.isIOS) {
+                                    Navigator.push(
+                                      context,
+                                      CupertinoPageRoute(
+                                        builder: (BuildContext context) =>
+                                            IosPayment(),
+                                      ),
+                                    );
+                                  }
+
+                                  Fluttertoast.showToast(
+                                      msg: NetworkUtil.subscription_end_date == ''
+                                          ? 'Start your subscription'
+                                          : 'Renew Your Membership',
+                                      toastLength: Toast.LENGTH_LONG,
+                                      gravity: ToastGravity.SNACKBAR,
+                                      timeInSecForIosWeb: 1,
+                                      backgroundColor: Color(0xffE74C3C),
+                                      textColor: Colors.white,
+                                      fontSize: 16.0);
+
+                                } on PlatformException {
+                                  print('Failed to get platform version');
+                                }
+                              },
+                              // icon: Icon(Icons.add),
+                              label: Text('Read more...',style:  TextStyle(
+                                  color: hexToColor("#120BD6"),
+                                  fontWeight: FontWeight.normal,
+                                  fontSize: 15.0)),
+                            ),
+                            visible: !NetworkUtil.isSubScribedUser,
+                          ),
                         ),
                       ),
                     ]
@@ -333,6 +386,10 @@ class FastFacts extends State<FastFactsScreen> {
             context);
       }
     });
+  }
+
+  Color hexToColor(String code) {
+    return new Color(int.parse(code.substring(1, 7), radix: 16) + 0xFF000000);
   }
 
   Widget noDataView(String msg) => Center(

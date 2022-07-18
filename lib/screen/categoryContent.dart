@@ -7,6 +7,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -14,10 +15,13 @@ import 'dart:async';
 //import 'package:scroll_to_index/scroll_to_index.dart';
 // import 'package:vector_math/vector_math.dart' as vec;
 import '../icons.dart';
+import 'IosPayment.dart';
 import 'Login_screen.dart';
 import 'PaymentSelection.dart';
 import 'dart:io' show Platform;
 import 'package:share_plus/share_plus.dart';
+
+import 'WebViewScreen.dart';
 
 class categoryContent extends StatefulWidget {
   categoriesModel categoriesModel_;
@@ -692,6 +696,40 @@ class Expansionpaneltate extends State<categoryContent> {
                                   ),
                                   inAsyncCall: _submit),
                           //),
+                            floatingActionButton: Visibility(
+                              child: FloatingActionButton.extended(
+                                backgroundColor: Colors.white,
+                                foregroundColor: Colors.white,
+                                onPressed: () {
+                                  try
+                                  {
+                                    if (Platform.isAndroid) {
+                                      Navigator.push(
+                                        context,
+                                        CupertinoPageRoute(
+                                          builder: (BuildContext context) => WebViewEx(),
+                                        ),
+                                      );
+                                    } else if (Platform.isIOS) {
+                                      Navigator.push(
+                                        context,
+                                        CupertinoPageRoute(
+                                          builder: (BuildContext context) => IosPayment(),
+                                        ),
+                                      );
+                                    }
+                                  } on PlatformException {
+                                    print('Failed to get platform version');
+                                  }
+                                },
+                                // icon: Icon(Icons.add),
+                                label: Text('Read more...',style:  TextStyle(
+                                    color: hexToColor("#120BD6"),
+                                    fontWeight: FontWeight.normal,
+                                    fontSize: 15.0)),
+                              ),
+                              visible: !NetworkUtil.isSubScribedUser,
+                            ),
                         ),
                       ),
                     ]
@@ -711,6 +749,10 @@ class Expansionpaneltate extends State<categoryContent> {
         ),
       ),
     );
+  }
+
+  Color hexToColor(String code) {
+    return new Color(int.parse(code.substring(1, 7), radix: 16) + 0xFF000000);
   }
 
   Future<Null> _refresh() {
