@@ -7,6 +7,7 @@ import 'package:device_info/device_info.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_windowmanager/flutter_windowmanager.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:path_provider/path_provider.dart';
@@ -78,11 +79,17 @@ class _MyHomePageState extends State<MyHomePage> {
   late SecureStorage secureStorage;
 
   @override
-  void initState(){
+  void initState()
+  {
+    secureScreen();
+
     super.initState();
 
     getPreferenceData();
+  }
 
+  Future<void> secureScreen() async {
+    await FlutterWindowManager.addFlags(FlutterWindowManager.FLAG_SECURE);
   }
 
   getPreferenceData() async {
