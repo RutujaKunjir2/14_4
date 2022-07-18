@@ -1506,13 +1506,13 @@ class _DashboardWidgetState extends State<Dashboard>
                                                     "Searching...");
                                               } else {
                                                 return noDataView(
-                                                    "No record found");
+                                                    "No data found");
                                               }
                                             }
                                           } else {
                                             // display error message if your list or data is null.
                                             return noDataView(
-                                                "No record found");
+                                                "No data found");
                                           }
                                         } else if (snapshot.hasError) {
                                           // display your message if snapshot has error.
