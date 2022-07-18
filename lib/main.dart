@@ -2,9 +2,11 @@ import 'dart:async';
 import 'package:CFE/Networking/networkUtil.dart';
 import 'package:CFE/screen/Dashboard_screen.dart';
 import 'package:CFE/screen/Login_screen.dart';
+import 'package:CFE/screen/Welcome_screen.dart';
 import 'package:CFE/services/storage.dart';
 import 'package:device_info/device_info.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_windowmanager/flutter_windowmanager.dart';
@@ -417,15 +419,20 @@ class _MyHomePageState extends State<MyHomePage> {
 
       }else if(res != null && res["MessageType"] == 0){
 
-        Fluttertoast.showToast(
-            msg: res["Message"],
-            toastLength: Toast.LENGTH_LONG,
-            gravity: ToastGravity.SNACKBAR,
-            timeInSecForIosWeb: 1,
-            backgroundColor: Color(0xffDA4542),
-            textColor: Colors.white,
-            fontSize: 16.0
-        );
+        // Fluttertoast.showToast(
+        //     msg: res["Message"],
+        //     toastLength: Toast.LENGTH_LONG,
+        //     gravity: ToastGravity.SNACKBAR,
+        //     timeInSecForIosWeb: 1,
+        //     backgroundColor: Color(0xffDA4542),
+        //     textColor: Colors.white,
+        //     fontSize: 16.0
+        // );
+
+        Navigator.pushReplacement(
+            context,
+            CupertinoPageRoute(
+                builder: (context) => const WelcomeScreen()));
 
       }else{
 
