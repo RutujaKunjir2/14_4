@@ -439,12 +439,12 @@ class FavoritesListScreen extends State<FavoritesList> {
                                               } else {
                                                 // display message for empty data message.
                                                 return noDataView(
-                                                    "No data found");
+                                                    "Nothing is added to favorites yet");
                                               }
                                             } else {
                                               // display error message if your list or data is null.
                                               return noDataView(
-                                                  "No data found");
+                                                  "Nothing is added to favorites yet");
                                             }
                                           } else if (snapshot.hasError) {
                                             // display your message if snapshot has error.

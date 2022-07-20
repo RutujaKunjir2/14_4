@@ -185,62 +185,80 @@ class Expansionpaneltate extends State<categoryContent> {
     });
   }
 
-  Future<detailListModel> getAppSearchList(int pageindex) async {
-    //print("pageindex search : " + pageindex.toString());
-    if (!isLoadingLazy && pageindex > 0) {
-      setState(() {
-        isLoadingLazy = true;
+  Future<detailListModel> getAppSearchList(int pageindex) async
+  {
+    if (NetworkUtil.isSubScribedUser)
+    {
+      //print("pageindex search : " + pageindex.toString());
+      if (!isLoadingLazy && pageindex > 0) {
+        setState(() {
+          isLoadingLazy = true;
+        });
+      }
+
+      NetworkUtil.getAppSearch = "api/posts/search/" + pageindex.toString() + "/" + pageCount.toString() + "?search=" + _filter.text.toString();
+      return _netUtil
+          .get(NetworkUtil.getAppSearch, true)
+          .then((dynamic res) {
+        //json.decode used to decode response.body(string to map)
+        //print(res['posts'].toString());
+
+        if (res != null && res["MessageType"] == 1) {
+          getDetailList(res['posts']);
+          return detailListModel.fromJson(res['posts']);
+          //return getDetailList(res['posts']);
+        } else if (res != null && res["MessageType"] == 0) {
+          Fluttertoast.showToast(
+              msg: res["Message"],
+              toastLength: Toast.LENGTH_LONG,
+              gravity: ToastGravity.SNACKBAR,
+              timeInSecForIosWeb: 1,
+              backgroundColor: Color(0xffE74C3C),
+              textColor: Colors.white,
+              fontSize: 16.0);
+
+          return detailListModel.fromJson([]);
+        } else if (res != null && res["MessageType"] == -1) {
+
+          Fluttertoast.showToast(
+              msg: res["Message"],
+              toastLength: Toast.LENGTH_LONG,
+              gravity: ToastGravity.SNACKBAR,
+              timeInSecForIosWeb: 1,
+              backgroundColor: Color(0xffE74C3C),
+              textColor: Colors.white,
+              fontSize: 16.0);
+
+          return detailListModel.fromJson([]);
+        } else {
+          Fluttertoast.showToast(
+              msg: 'Something went wrong.',
+              toastLength: Toast.LENGTH_LONG,
+              gravity: ToastGravity.SNACKBAR,
+              timeInSecForIosWeb: 1,
+              backgroundColor: Color(0xffE74C3C),
+              textColor: Colors.white,
+              fontSize: 16.0);
+
+          return detailListModel.fromJson([]);
+          //return getDetailList(res['posts']);
+        }
       });
     }
-
-    NetworkUtil.getAppSearch = "api/posts/search/" + pageindex.toString() + "/" + pageCount.toString() + "?search=" + _filter.text.toString();
-    return _netUtil
-        .get(NetworkUtil.getAppSearch, true)
-        .then((dynamic res) {
-      //json.decode used to decode response.body(string to map)
-      //print(res['posts'].toString());
-
-      if (res != null && res["MessageType"] == 1) {
-        getDetailList(res['posts']);
-        return detailListModel.fromJson(res['posts']);
-        //return getDetailList(res['posts']);
-      } else if (res != null && res["MessageType"] == 0) {
-        Fluttertoast.showToast(
-            msg: res["Message"],
-            toastLength: Toast.LENGTH_LONG,
-            gravity: ToastGravity.SNACKBAR,
-            timeInSecForIosWeb: 1,
-            backgroundColor: Color(0xffE74C3C),
-            textColor: Colors.white,
-            fontSize: 16.0);
-
-        return detailListModel.fromJson([]);
-      } else if (res != null && res["MessageType"] == -1) {
-
-        Fluttertoast.showToast(
-            msg: res["Message"],
-            toastLength: Toast.LENGTH_LONG,
-            gravity: ToastGravity.SNACKBAR,
-            timeInSecForIosWeb: 1,
-            backgroundColor: Color(0xffE74C3C),
-            textColor: Colors.white,
-            fontSize: 16.0);
-
-        return detailListModel.fromJson([]);
-      } else {
-        Fluttertoast.showToast(
-            msg: 'Something went wrong.',
-            toastLength: Toast.LENGTH_LONG,
-            gravity: ToastGravity.SNACKBAR,
-            timeInSecForIosWeb: 1,
-            backgroundColor: Color(0xffE74C3C),
-            textColor: Colors.white,
-            fontSize: 16.0);
-
-        return detailListModel.fromJson([]);
-        //return getDetailList(res['posts']);
-      }
-    });
+    else
+    {
+      Fluttertoast.showToast(
+          msg: NetworkUtil.subscription_end_date == ''
+              ? 'Start your subscription'
+              : 'Renew Your Membership',
+          toastLength: Toast.LENGTH_LONG,
+          gravity: ToastGravity.SNACKBAR,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Color(0xffE74C3C),
+          textColor: Colors.white,
+          fontSize: 16.0);
+      return detailListModel.fromJson([]);
+    }
   }
 
   Future<detailListModel> getcategoriesDetail(int pageindex) async {
