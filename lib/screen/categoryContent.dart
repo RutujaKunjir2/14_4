@@ -718,6 +718,18 @@ class Expansionpaneltate extends State<categoryContent> {
                                         ),
                                       );
                                     }
+
+                                    Fluttertoast.showToast(
+                                        msg: NetworkUtil.subscription_end_date == ''
+                                            ? 'Start your subscription'
+                                            : 'Renew Your Membership',
+                                        toastLength: Toast.LENGTH_LONG,
+                                        gravity: ToastGravity.SNACKBAR,
+                                        timeInSecForIosWeb: 1,
+                                        backgroundColor: Color(0xffE74C3C),
+                                        textColor: Colors.white,
+                                        fontSize: 16.0);
+
                                   } on PlatformException {
                                     print('Failed to get platform version');
                                   }
