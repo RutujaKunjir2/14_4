@@ -54,6 +54,7 @@ class Expansionpaneltate extends State<categoryContent> {
   ScrollController _sc = new ScrollController();
   bool isLoadingLazy = false;
   bool _hasMore = true;
+  bool isShowMe = true;
   bool isSearchClick = false;
   String? categoryName = '';
   final _height = 60.0;
@@ -147,7 +148,26 @@ class Expansionpaneltate extends State<categoryContent> {
       }
     });
 
-    _sc.addListener(() {
+    _sc.addListener(()
+    {
+
+      if (_sc.position.atEdge) {
+        if (_sc.position.pixels > 0) {
+          if (isShowMe) {
+            setState(() {
+              isShowMe = false;
+            });
+          }
+        }
+      }
+      else{
+        if (!isShowMe){
+          setState(() {
+            isShowMe = true;
+          });
+        }
+      }
+
       if (_sc.position.pixels == _sc.position.maxScrollExtent) {
         //print("lazy load listener called");
 
@@ -743,7 +763,7 @@ class Expansionpaneltate extends State<categoryContent> {
                                     fontWeight: FontWeight.bold,
                                     fontSize: 15.0)),
                               ),
-                              visible: !NetworkUtil.isSubScribedUser,
+                              visible: !NetworkUtil.isSubScribedUser && !isShowMe,
                             ),
                         ),
                       ),

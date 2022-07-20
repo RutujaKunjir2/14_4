@@ -40,6 +40,7 @@ class FastFacts extends State<FastFactsScreen> {
   bool isSearchClick = false;
   String? categoryName = '';
   final _height = 60.0;
+  bool isShowMe = true;
 
   Map<String, String> headers = {
     "Authorization": "Bearer " + NetworkUtil.token
@@ -73,7 +74,25 @@ class FastFacts extends State<FastFactsScreen> {
       }
     });
 
-    _sc.addListener(() {
+    _sc.addListener(()
+    {
+      if (_sc.position.atEdge) {
+        if (_sc.position.pixels > 0) {
+          if (isShowMe) {
+            setState(() {
+              isShowMe = false;
+            });
+          }
+        }
+      }
+      else{
+        if (!isShowMe){
+          setState(() {
+            isShowMe = true;
+          });
+        }
+      }
+
       if (_sc.position.pixels == _sc.position.maxScrollExtent) {
         //print("lazy load listener called");
 
@@ -346,7 +365,7 @@ class FastFacts extends State<FastFactsScreen> {
                                   fontWeight: FontWeight.bold,
                                   fontSize: 15.0)),
                             ),
-                            visible: !NetworkUtil.isSubScribedUser,
+                            visible: !NetworkUtil.isSubScribedUser && !isShowMe,
                           ),
                         ),
                       ),
